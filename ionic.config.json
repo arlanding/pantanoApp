@@ -1,0 +1,8 @@
+{
+  "name": "pantanoApp",
+  "integrations": {
+    "cordova": {}
+  },
+  "type": "angular",
+  "id": "fc46ef24"
+}
