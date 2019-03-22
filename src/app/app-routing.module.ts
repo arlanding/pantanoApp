@@ -11,10 +11,8 @@ const routes: Routes = [
     path: 'home',
     loadChildren: './home/home.module#HomePageModule'
   },
-  {
-    path: 'list',
-    loadChildren: './list/list.module#ListPageModule'
-  }
+  { path: 'jugar', loadChildren: './game/game.module#GamePageModule' },
+  { path: 'practicar', loadChildren: './questions/questions.module#QuestionsPageModule' }
 ];
 
 @NgModule({
@@ -23,4 +21,4 @@ const routes: Routes = [
   ],
   exports: [RouterModule]
 })
-export class AppRoutingModule {}
+export class AppRoutingModule { }
