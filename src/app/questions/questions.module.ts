@@ -8,6 +8,7 @@ import { IonicModule } from '@ionic/angular';
 import { QuestionsPage } from './questions.page';
 import { QuestionCardComponent } from './components/question-card/question-card.component';
 import { SharedModule } from '../shared/shared.module';
+import { LoaderCardsComponent } from './components/loader-cards/loader-cards.component';
 
 const routes: Routes = [
   {
@@ -23,6 +24,6 @@ const routes: Routes = [
     IonicModule,
     RouterModule.forChild(routes)    
   ],
-  declarations: [QuestionsPage, QuestionCardComponent]
+  declarations: [QuestionsPage, QuestionCardComponent, LoaderCardsComponent]
 })
 export class QuestionsPageModule {}
