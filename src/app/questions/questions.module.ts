@@ -6,6 +6,8 @@ import { Routes, RouterModule } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
 
 import { QuestionsPage } from './questions.page';
+import { QuestionCardComponent } from './components/question-card/question-card.component';
+import { SharedModule } from '../shared/shared.module';
 
 const routes: Routes = [
   {
@@ -16,11 +18,11 @@ const routes: Routes = [
 
 @NgModule({
   imports: [
-    CommonModule,
+    SharedModule,
     FormsModule,
     IonicModule,
-    RouterModule.forChild(routes)
+    RouterModule.forChild(routes)    
   ],
-  declarations: [QuestionsPage]
+  declarations: [QuestionsPage, QuestionCardComponent]
 })
 export class QuestionsPageModule {}

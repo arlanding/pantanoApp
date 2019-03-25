@@ -1,0 +1,9 @@
+<ion-card>
+    <ion-item>
+        <ion-label><strong>#{{question.number}}</strong> - {{question.quest}}</ion-label>
+        <ion-button fill="outline" slot="end" *ngIf="!isAnswerVisible" (click)="toggleAnswerVisibility()">Ver respuesta</ion-button>
+    </ion-item>
+    <ion-card-content *ngIf="isAnswerVisible">
+        {{question.ans}}
+    </ion-card-content>
+</ion-card>

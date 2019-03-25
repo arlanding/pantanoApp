@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { CentralService } from '../core/services/central.service';
 import _ from 'lodash';
+import { IonInfiniteScroll } from '@ionic/angular';
 
 export interface CategoriesInterface {
   id: number,
@@ -16,6 +17,8 @@ export interface CategoriesInterface {
 })
 
 export class QuestionsPage implements OnInit {
+  @ViewChild(IonInfiniteScroll) infiniteScroll: IonInfiniteScroll;
+
 
   private originalQuestions = [];
   private currentQuestionsByCategory = {};
@@ -27,6 +30,9 @@ export class QuestionsPage implements OnInit {
   public categoryActive: CategoriesInterface;
   public mobile = false;
 
+  private currentListMin = 0;
+  private currentLisMax = 10;
+
   // TODO: get categories from BE
   public categories: CategoriesInterface[] = [
     { id: 0, value: 'all', description: 'Todas', keywords: [] },
@@ -37,9 +43,6 @@ export class QuestionsPage implements OnInit {
   ]
 
   constructor(public coreService: CentralService) { 
-    if (window.screen.width < 500) {
-      this.mobile = true;
-    }
   }
 
   ngOnInit() {
@@ -48,9 +51,20 @@ export class QuestionsPage implements OnInit {
     this.categoryActive = this.categories[0];
     this.coreService.getQuestions().subscribe(data => {      
       this.originalQuestions = data.questions;
-      this.currentQuestionsByCategory = this.originalQuestions;
+      this.currentQuestionsByCategory = this.originalQuestions.slice(this.currentListMin, this.currentLisMax);
       this.renderData();
     })
+  }
+
+
+  loadData(event) {
+    this.currentListMin = this.currentLisMax;
+    this.currentLisMax = this.currentListMin + 10;
+    const questionToAdd = this.originalQuestions.slice(this.currentListMin, this.currentLisMax);
+    _.each(questionToAdd, newQt => {
+      this.currentQuestions.push(newQt);
+    });
+    event.target.complete();
   }
 
   renderData() {
