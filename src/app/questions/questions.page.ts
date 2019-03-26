@@ -23,17 +23,15 @@ export class QuestionsPage implements OnInit {
 
   private originalQuestions = [];
   private currentQuestionsByCategory = {};
-  public filters = [];
-  public currentQuestions = [];
+  private currentQuestions = [];
+  private currentListMin: number;
+  private currentLisMax: number;
+  public filters: string[] = [];
   public questionsInScroller = []
-  public currentFilterToAdd = '';
   public loading: boolean;
   public model: any = {};
   public categoryActive: CategoriesInterface;
-  public mobile = false;
 
-  private currentListMin;
-  private currentLisMax;
 
   // TODO: get categories from BE
   public categories: CategoriesInterface[] = [
@@ -48,7 +46,6 @@ export class QuestionsPage implements OnInit {
   }
 
   ngOnInit() {
-    this.loading = true;
     // Set all as default category
     this.categoryActive = this.categories[0];
     this.coreService.getQuestions().subscribe(data => {
@@ -59,7 +56,7 @@ export class QuestionsPage implements OnInit {
     })
   }
 
-
+  // Public function used by virtualScroll && this.renderData()
   loadData(event?) {
     this.currentListMin = this.currentLisMax;
     this.currentLisMax = this.currentListMin + 10;
@@ -69,77 +66,58 @@ export class QuestionsPage implements OnInit {
     });
     if (event) {
       event.target.complete();
+    } else {
+      setTimeout(() => {
+        this.toggleLoader();
+      }, 1000);
     }
   }
 
-  renderData() {
+  // Public function used by searchbox
+  public submitForm() {
+    debugger;
+    // If send an empety filter, return only a cleared filter
+    if (this.model.newFilter === '' && this.filters.length > 0) {
+      this.clearFilters();
+      this.renderData();
+    } else if(this.model.newFilter !== '') {
+      // Else: add new filter and render data
+      this.addFilter(this.model.newFilter);
+      this.renderData();
+    }
+  }
+
+  // Public function used by tabs when filter by category
+  public categoryFilter(category) {
+    // Set new category active
+    this.categoryActive = category;
+    // Get questions filtered by new category
+    this.currentQuestionsByCategory = this.filterByCategory(category);
+    // Clear filters applied by user by searchbox
+    this.clearFilters();
+    // Render data in template
+    this.renderData();
+  }
+
+  // Prepare data to print in templae
+  private renderData() {
+    debugger;
+    // Show loader
+    this.toggleLoader();
     this.content.scrollToTop();
-    this.loading = true;
-    this.resetListNumbers();
+    this.resetVirtualScroll();
+    // Get the questions filtered by applied 
     const filteredQuestions = this.filter();
     this.currentQuestions = [];
     _.each(filteredQuestions, question => this.currentQuestions.push(question))
     this.loadData();
-    setTimeout(() => {
-      this.loading = false;
-    }, 1000);
   }
 
-  private resetListNumbers() {
-    this.questionsInScroller = [];
-    this.currentListMin;
-    this.currentLisMax = 0;
-  }
-
-  addFilter() {
-    this.filters = [];
-    this.filters.push(this.currentFilterToAdd);
-    this.renderData();
-  }
-
-  submitForm() {
-    if (this.model.newFilter === '') { return this.clearFilters(); }
-    this.currentFilterToAdd = this.model.newFilter;
-    this.addFilter();
-  }
-
-  removeFilter(filter) {
-    this.loading = true;
-    var index = this.filters.indexOf(filter);
-    if (index !== -1) {
-      this.filters.splice(index, 1);
-    }
-    this.renderData();
-  }
-
-  categoryFilter(category) {
-    this.loading = true;
-    this.categoryActive = category;
-    if (category.value === 'all') {
-      this.currentQuestionsByCategory = this.originalQuestions;
-    } else {
-      this.currentQuestionsByCategory = this.filterByCategory(category);
-    }
-    this.clearFilters();
-    this.renderData();
-  }
-
-  resetCategoryFilter() {
-    this.loading = true;
-    this.currentQuestionsByCategory = this.originalQuestions;
-    this.categoryActive = this.categories[0];
-  }
-
-  clearFilters() {
-    this.loading = true;
-    this.currentFilterToAdd = '';
+  private clearFilters() {
+    // Reset the string in the template input binded whit this.model.newFilter
     this.model.newFilter = '';
+    // Remove applied filters
     this.filters = [];
-    this.renderData();
-  }
-
-  formatSearch(search): string {
-    return search.normalize('NFD').replace(/[\u0300-\u036f]/g, "").toLowerCase();
   }
 
   private filter() {
@@ -160,11 +138,41 @@ export class QuestionsPage implements OnInit {
     return reg.test(value);
   }
 
-  private filterByCategory(category) {
-    return _.filter(this.originalQuestions, (question) => {
-      return question.category.indexOf(category.value) > -1;
-    })
+  private filterByCategory(category): CategoriesInterface[] {
+    let questionsFilteredByCategory;
+    // If category is 'all' return all the original questions
+    if (category.value === 'all') {
+      questionsFilteredByCategory = this.originalQuestions;
+    } else {
+      // Every question has a category property, so filter them getting only the ones that has the received category by parameter
+      questionsFilteredByCategory = _.filter(this.originalQuestions, (question) => {
+        return question.category.indexOf(category.value) > -1;
+      })
+    }
+    return questionsFilteredByCategory;
   }
 
+  private formatSearch(search): string {
+    // Reduce an eliminate special characters unifying searchs
+    return search.normalize('NFD').replace(/[\u0300-\u036f]/g, "").toLowerCase();
+  }
+
+  private resetVirtualScroll() {
+    // Reset current question in scroller showing only ten, setting the fi
+    this.questionsInScroller = [];
+    this.currentListMin;
+    this.currentLisMax = 0;
+  }
+
+  private toggleLoader() {
+    this.loading = !this.loading;
+  }
+
+  private addFilter(currentFilterToAdd) {
+    // Reset current filters
+    this.filters = [];
+    // Add new one
+    this.filters.push(currentFilterToAdd);
+  }
 
 }

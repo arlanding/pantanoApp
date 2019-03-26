@@ -18,7 +18,7 @@
             <div *ngIf="!loading">
                 <pantano-question-card *ngFor="let question of questionsInScroller" [question]="question"></pantano-question-card>
             </div>
-            <p class="ion-margin-top" class="ion-padding" *ngIf="questionsInScroller.length < 1">Su búsqueda no ha generado resultados</p>
+            <p class="ion-margin-top" class="ion-padding" *ngIf="questionsInScroller.length < 1 && !loading">Su búsqueda no ha generado resultados</p>
             <ion-infinite-scroll threshold="100px" (ionInfinite)="loadData($event)">
                 <ion-infinite-scroll-content loadingSpinner="bubbles" loadingText="Loading more data...">
                 </ion-infinite-scroll-content>
