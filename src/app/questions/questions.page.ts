@@ -32,7 +32,6 @@ export class QuestionsPage implements OnInit {
   public model: any = {};
   public categoryActive: CategoriesInterface;
 
-
   // TODO: get categories from BE
   public categories: CategoriesInterface[] = [
     { id: 0, value: 'all', description: 'Todas', keywords: [], icon: 'apps' },
@@ -42,8 +41,7 @@ export class QuestionsPage implements OnInit {
     { id: 4, value: 'mundi', description: 'Mundi', keywords: ['pais', 'capital', 'barrio', 'continente'], icon: 'globe' }
   ]
 
-  constructor(public coreService: CentralService) {
-  }
+  constructor(public coreService: CentralService) {}
 
   ngOnInit() {
     // Set all as default category
@@ -75,13 +73,12 @@ export class QuestionsPage implements OnInit {
 
   // Public function used by searchbox
   public submitForm() {
-    debugger;
-    // If send an empety filter, return only a cleared filter
+    // If send an empty filter and we have applied ones, clear filters and render
     if (this.model.newFilter === '' && this.filters.length > 0) {
       this.clearFilters();
       this.renderData();
     } else if(this.model.newFilter !== '') {
-      // Else: add new filter and render data
+      // Else: if we receive a new filter, add it and render
       this.addFilter(this.model.newFilter);
       this.renderData();
     }
@@ -101,7 +98,6 @@ export class QuestionsPage implements OnInit {
 
   // Prepare data to print in templae
   private renderData() {
-    debugger;
     // Show loader
     this.toggleLoader();
     this.content.scrollToTop();
