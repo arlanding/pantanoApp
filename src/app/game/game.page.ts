@@ -7,6 +7,9 @@ import { Component, OnInit } from '@angular/core';
 })
 export class GamePage implements OnInit {
 
+  win = false;
+  fail = false;
+
   constructor() { }
 
   ngOnInit() {

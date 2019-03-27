@@ -1,5 +1,4 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Routes, RouterModule } from '@angular/router';
 
@@ -7,6 +6,10 @@ import { IonicModule } from '@ionic/angular';
 
 import { GamePage } from './game.page';
 import { SharedModule } from '../shared/shared.module';
+import { QuestionComponent } from './components/question/question.component';
+import { AnimationComponent } from './components/animation/animation.component';
+import { StatsBarComponent } from './components/stats-bar/stats-bar.component';
+import { TimerComponent } from './components/timer/timer.component';
 
 const routes: Routes = [
   {
@@ -21,7 +24,7 @@ const routes: Routes = [
     FormsModule,
     IonicModule,
     RouterModule.forChild(routes)
-    ],
-  declarations: [GamePage]
+  ],
+  declarations: [GamePage, QuestionComponent, AnimationComponent, StatsBarComponent, TimerComponent]
 })
-export class GamePageModule {}
+export class GamePageModule { }
