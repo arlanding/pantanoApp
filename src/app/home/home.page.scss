@@ -1,4 +1,13 @@
-.welcome-card ion-img {
-  max-height: 35vh;
-  overflow: hidden;
+.welcome-card {
+  background: #997D5F;
+
+  ion-img {
+    max-height: 35vh;
+    overflow: hidden;
+  }
+
+  ion-card-title, ion-card-subtitle, ion-card-content {
+    color: white;
+  }
+
 }

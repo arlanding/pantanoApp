@@ -16,9 +16,9 @@ export class AppComponent {
       icon: 'home'
     },
     {
-      title: 'Jugar',
+      title: 'Jugar (Beta)',
       url: '/jugar',
-      icon: 'list'
+      icon: 'planet'
     },
     {
       title: 'Practicar',
