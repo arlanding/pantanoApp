@@ -66,7 +66,7 @@ export class QuestionsPage implements OnInit {
       event.target.complete();
     } else {
       setTimeout(() => {
-        this.toggleLoader();
+        this.hideLoader();
       }, 1000);
     }
   }
@@ -162,6 +162,10 @@ export class QuestionsPage implements OnInit {
 
   private toggleLoader() {
     this.loading = !this.loading;
+  }
+  
+  private hideLoader() {
+    this.loading = false;
   }
 
   private addFilter(currentFilterToAdd) {
