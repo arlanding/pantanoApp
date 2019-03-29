@@ -1,16 +1,16 @@
 <pantano-header></pantano-header>
 
-<ion-content>
+<ion-content *ngIf="config.start">
     <main>
-        <pantano-title-bar></pantano-title-bar>
-        <pantano-stats-bar></pantano-stats-bar>     
-        <pantano-animation></pantano-animation>   
-        <pantano-timer></pantano-timer>
-        <pantano-wildcard-bar></pantano-wildcard-bar>
+        <pantano-title-bar [game]="game$"></pantano-title-bar>
+        <pantano-stats-bar [game]="game$"></pantano-stats-bar>     
+        <pantano-animation [game]="game$"></pantano-animation>   
+        <pantano-timer [game]="game$" (event)="childEvent($event)"></pantano-timer>
+        <pantano-wildcard-bar [game]="game$" (event)="childEvent($event)"></pantano-wildcard-bar>
     </main>
 </ion-content>
-<ion-footer>
+<ion-footer *ngIf="config.start">
     <ion-toolbar color="dark">
-        <pantano-question [game]="game$"></pantano-question>
+        <pantano-question [game]="game$" (event)="childEvent($event)"></pantano-question>
     </ion-toolbar>
 </ion-footer>
