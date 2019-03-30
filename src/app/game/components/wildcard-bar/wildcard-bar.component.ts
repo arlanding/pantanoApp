@@ -14,7 +14,7 @@ export class WildcardBarComponent implements OnInit, OnDestroy {
   private $gameSubscription;
   private $animationSubscription;
   public errorsCommitted = 0;
-  public disableWildcard = false;
+  public disableWildcard = true;
 
   constructor() { }
 
