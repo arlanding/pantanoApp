@@ -11,13 +11,21 @@ export class WildcardBarComponent implements OnInit, OnDestroy {
   event: EventEmitter<any> = new EventEmitter();
 
   private $gameSubscription;
+  public errorsCommitted = 0;
 
   constructor() { }
 
   ngOnInit(): void {
     this.$gameSubscription = this.game.subscribe(change => {
+      if(change.event === 'wrongAnswer' || change.event === 'gameOver'){
+        this.errorsCommitted = change.errorsCommitted;
+      }
     });
-    this.event.emit({ init: true, child: 'wildcard' });
+    this.emit({ eventName: 'init' });
+  }
+
+  private emit(emition){
+    this.event.emit({ child: 'wildcard', ...emition});
   }
 
   ngOnDestroy(): void {

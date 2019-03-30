@@ -1,15 +1,23 @@
-ion-content {
-    main {
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-        height: 100%;
-        align-items: center;
+:host {
+    ion-content {
+        main {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            height: 100%;
+            align-items: center;
+        }
     }
-}
 
-ion-footer {
-    ion-toolbar {
-        padding: 20px 0px;
+    ion-footer {
+        ion-toolbar {
+            min-height: 248px;
+            padding: 20px 0px;
+        }
+    }
+
+    .toolbar-title {
+        white-space: normal !important;
+        text-overflow: inherit;
     }
 }

@@ -17,7 +17,11 @@ export class TimerComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.$gameSubscription = this.game.subscribe(change => {
     });
-    this.event.emit({ init: true, child: 'timer' });
+    this.emit({ eventName: 'init' });
+  }
+
+  private emit(emition){
+    this.event.emit({ child: 'timer', ...emition});
   }
 
   ngOnDestroy(): void {

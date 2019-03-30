@@ -7,7 +7,8 @@ export interface GameConfigInterface {
   start: boolean,
   gameQuestions: any,
   childsInitialized: number,
-  questionNumber: number
+  questionNumber: number,
+  errorsCommitted: number
 }
 
 @Component({
@@ -23,7 +24,8 @@ export class GamePage implements OnInit {
     start: false,
     gameQuestions: [],
     childsInitialized: 0,
-    questionNumber: 1
+    questionNumber: 1,
+    errorsCommitted: 0
   }
   public game$ = this.newGameSubj.asObservable();
 
@@ -39,23 +41,49 @@ export class GamePage implements OnInit {
     });
   }
 
+  private setNewGameProperties(newGameQuestions) {
+    this.config.start = true;
+    this.config.questionNumber = 1;
+    this.config.gameQuestions = newGameQuestions;
+    this.config.errorsCommitted = 0;
+  }
+
+  public childEvent(event) {
+
+    switch (event.eventName) {
+      case 'init':
+        this.initChildEventReceived();
+        break;
+      case 'answer':
+        this.answerReceived(event.correctAnswer);
+        break;
+    }
+
+  }
+
+  private answerReceived(correctAnswer: boolean){
+    this.config.questionNumber++;
+    correctAnswer ? this.correctAnswerCommited() : this.newErrorCommited();
+  }
+
+  private correctAnswerCommited(){
+    this.nofityChangeInGame('correctAnswer');
+  }
+
+  private newErrorCommited(){
+    this.config.errorsCommitted++;
+    this.config.errorsCommitted == 2 ? this.nofityChangeInGame('gameOver') : this.nofityChangeInGame('wrongAnswer');
+  }
+
   private nofityChangeInGame(event?: string): void {
     const change = { event: event, ...this.config }
     this.newGameSubj.next(change);
   }
 
-  private setNewGameProperties(newGameQuestions){
-    this.config.start = true;
-    this.config.questionNumber = 1;
-    this.config.gameQuestions = newGameQuestions;
-  }
-
-  public childEvent(event) {
-    if (event.init) {
-      this.config.childsInitialized++;
-      if (this.config.childsInitialized >= 3) {
-        this.nofityChangeInGame();
-      }
+  private initChildEventReceived() {
+    this.config.childsInitialized++;
+    if (this.config.childsInitialized >= 3) {
+      this.nofityChangeInGame('startGame');
     }
   }
 

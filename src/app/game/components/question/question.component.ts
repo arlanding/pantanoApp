@@ -12,26 +12,69 @@ export class QuestionComponent implements OnInit, OnDestroy {
 
   private $gameSubscription;
   public question: string = '';
-  public answer1 = '';
-  public answer2 = '';
+  public answers = ['','']
+  public disabled = true;
 
-  constructor() { }
+  private questionConfig = {
+    correctAnswer: ''
+  }
+
+  constructor() { 
+
+  }
 
   ngOnInit(): void {
     this.$gameSubscription = this.game.subscribe(change => {
-      this.renderQuestion(change.gameQuestions[change.questionNumber - 1]);
+      // TODO: Check following conditional
+      if(change.event !== 'gameOver'){
+        setTimeout(()=>{
+          this.renderQuestion(change.gameQuestions[change.questionNumber - 1]);
+        },2600);
+      }
     });
-    this.event.emit({ init: true, child: 'question'});
+    this.emit({ eventName: 'init' });
   }
 
-  renderQuestion(question) {
+  public answerQuestion(userAnswer){
+    this.disabled = true;
+    const correctAnswerEmmiter = { eventName: 'answer', correctAnswer: true };
+    const incorrectAnswerEmmiter = { eventName: 'answer', correctAnswer: false };
+    // Check answer and emmit result
+    userAnswer === this.questionConfig.correctAnswer ? this.emit(correctAnswerEmmiter) : this.emit(incorrectAnswerEmmiter);
+  }
+
+  private renderQuestion(question) {
+    // Save correct answer in config
+    this.questionConfig.correctAnswer = question.ans;
+    // Assign received question for render
     this.question = question.quest;
-    this.answer1 = question.ans;
-    this.answer2 = 'fail ' + question.ans;
+    // Get random answers positions
+    let indexAnswers = [0,1]    
+    indexAnswers = this.getRandomOrder(indexAnswers);
+    // Assign received answers for render
+    this.answers[indexAnswers[0]] = question.ans;
+    this.answers[indexAnswers[1]] = 'fail: ' + question.ans;
+    // able buttons
+    this.disabled = false;
+  }
+
+  private emit(emition){
+    this.event.emit({ child: 'question', ...emition});
   }
 
   ngOnDestroy(): void {
     this.$gameSubscription.unsubscribe();
+  }  
+
+  private getRandomOrder(array) {
+    var tmp, current, top = array.length;
+    if(top) while(--top) {
+      current = Math.floor(Math.random() * (top + 1));
+      tmp = array[current];
+      array[current] = array[top];
+      array[top] = tmp;
+    }
+    return array;
   }
 
 }

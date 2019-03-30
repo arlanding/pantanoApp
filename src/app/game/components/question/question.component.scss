@@ -1,4 +1,7 @@
-ion-title{
-    position: sticky;
-    padding-bottom: 20px;
+:host {
+    h2 {
+        margin: 0px 7px 30px;
+        font-size: 20px;
+        text-align: justify;
+    }
 }
