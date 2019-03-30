@@ -5,10 +5,12 @@ import { AlertController } from '@ionic/angular';
 
 export interface GameConfigInterface {
   start: boolean,
+  gameOver: boolean,
   gameQuestions: any,
   childsInitialized: number,
   questionNumber: number,
-  errorsCommitted: number
+  errorsCommitted: number,
+  errorsAllowed: number
 }
 
 @Component({
@@ -22,10 +24,12 @@ export class GamePage implements OnInit {
   private newGameSubj: Subject<any> = new Subject();
   private config: GameConfigInterface = {
     start: false,
+    gameOver: false,
     gameQuestions: [],
     childsInitialized: 0,
     questionNumber: 1,
-    errorsCommitted: 0
+    errorsCommitted: 0,
+    errorsAllowed: 2
   }
   public game$ = this.newGameSubj.asObservable();
 
@@ -43,6 +47,7 @@ export class GamePage implements OnInit {
 
   private setNewGameProperties(newGameQuestions) {
     this.config.start = true;
+    this.config.gameOver = false;
     this.config.questionNumber = 1;
     this.config.gameQuestions = newGameQuestions;
     this.config.errorsCommitted = 0;
@@ -61,18 +66,19 @@ export class GamePage implements OnInit {
 
   }
 
-  private answerReceived(correctAnswer: boolean){
+  private answerReceived(correctAnswer: boolean) {
+    if (this.config.gameOver) { return; }
     this.config.questionNumber++;
     correctAnswer ? this.correctAnswerCommited() : this.newErrorCommited();
   }
 
-  private correctAnswerCommited(){
+  private correctAnswerCommited() {
     this.nofityChangeInGame('correctAnswer');
   }
 
-  private newErrorCommited(){
+  private newErrorCommited() {
     this.config.errorsCommitted++;
-    this.config.errorsCommitted == 2 ? this.nofityChangeInGame('gameOver') : this.nofityChangeInGame('wrongAnswer');
+    this.config.errorsCommitted === this.config.errorsAllowed ? this.nofityChangeInGame('gameOver') : this.nofityChangeInGame('wrongAnswer');
   }
 
   private nofityChangeInGame(event?: string): void {

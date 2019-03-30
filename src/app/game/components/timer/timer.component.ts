@@ -11,17 +11,37 @@ export class TimerComponent implements OnInit, OnDestroy {
   event: EventEmitter<any> = new EventEmitter();
 
   private $gameSubscription;
+  private interval;
+  public timePct = 1.0;
 
   constructor() { }
 
   ngOnInit(): void {
     this.$gameSubscription = this.game.subscribe(change => {
+      if (this.interval) clearInterval(this.interval);
+      if (change.event !== 'gameOver') {
+        setTimeout(() => {
+          this.restartTimer()
+        }, 2600);
+      }
     });
     this.emit({ eventName: 'init' });
   }
 
-  private emit(emition){
-    this.event.emit({ child: 'timer', ...emition});
+  private restartTimer() {
+    this.timePct = 1.1;
+    this.interval = setInterval(() => {
+      this.timePct = this.timePct - 0.01;
+      if (this.timePct < 0) {
+        const incorrectAnswerEmmiter = { eventName: 'answer', correctAnswer: false };
+        return this.emit(incorrectAnswerEmmiter)
+      }
+    }
+      , 100);
+  }
+
+  private emit(emition) {
+    this.event.emit({ child: 'timer', ...emition });
   }
 
   ngOnDestroy(): void {
