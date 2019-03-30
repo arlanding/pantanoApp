@@ -18,18 +18,26 @@ export class TimerComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.$gameSubscription = this.game.subscribe(change => {
-      if (this.interval) clearInterval(this.interval);
-      if (change.event !== 'gameOver') {
-        setTimeout(() => {
-          this.restartTimer()
-        }, 2600);
+      switch (change.event) {
+        case 'gameOver':
+          if (this.interval) clearInterval(this.interval);
+          break;
+        case 'wildcard':
+          this.resetTimePct();
+          break;
+        default:
+          if (this.interval) clearInterval(this.interval);
+          setTimeout(() => {
+            this.restartTimer()
+          }, 2600);
+          break;
       }
     });
     this.emit({ eventName: 'init' });
   }
 
   private restartTimer() {
-    this.timePct = 1.1;
+    this.resetTimePct();
     this.interval = setInterval(() => {
       this.timePct = this.timePct - 0.01;
       if (this.timePct < 0) {
@@ -38,6 +46,10 @@ export class TimerComponent implements OnInit, OnDestroy {
       }
     }
       , 100);
+  }
+
+  private resetTimePct() {
+    this.timePct = 1.1;
   }
 
   private emit(emition) {

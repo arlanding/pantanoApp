@@ -12,20 +12,34 @@ export class WildcardBarComponent implements OnInit, OnDestroy {
 
   private $gameSubscription;
   public errorsCommitted = 0;
+  public disableWildcard = false;
 
   constructor() { }
 
   ngOnInit(): void {
     this.$gameSubscription = this.game.subscribe(change => {
-      if(change.event === 'wrongAnswer' || change.event === 'gameOver'){
-        this.errorsCommitted = change.errorsCommitted;
+      switch (change.event) {
+        case 'wildcard':
+          this.disableWildcard = change.wildcardApplied;
+          break;
+        case 'wrongAnswer':
+          this.errorsCommitted = change.errorsCommitted;
+          break;
+        case 'gameOver':
+          this.errorsCommitted = change.errorsCommitted;
+          break;
       }
+
     });
     this.emit({ eventName: 'init' });
   }
 
-  private emit(emition){
-    this.event.emit({ child: 'wildcard', ...emition});
+  public applyWildcard() {
+    this.emit({ eventName: 'wildcard' });
+  }
+
+  private emit(emition) {
+    this.event.emit({ child: 'wildcard', ...emition });
   }
 
   ngOnDestroy(): void {

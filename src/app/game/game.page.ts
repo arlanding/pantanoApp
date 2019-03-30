@@ -6,11 +6,12 @@ import { AlertController } from '@ionic/angular';
 export interface GameConfigInterface {
   start: boolean,
   gameOver: boolean,
+  wildcardApplied: boolean
   gameQuestions: any,
   childsInitialized: number,
   questionNumber: number,
   errorsCommitted: number,
-  errorsAllowed: number
+  errorsAllowed: number,
 }
 
 @Component({
@@ -25,6 +26,7 @@ export class GamePage implements OnInit {
   private config: GameConfigInterface = {
     start: false,
     gameOver: false,
+    wildcardApplied: false,
     gameQuestions: [],
     childsInitialized: 0,
     questionNumber: 1,
@@ -48,6 +50,7 @@ export class GamePage implements OnInit {
   private setNewGameProperties(newGameQuestions) {
     this.config.start = true;
     this.config.gameOver = false;
+    this.config.wildcardApplied = false;
     this.config.questionNumber = 1;
     this.config.gameQuestions = newGameQuestions;
     this.config.errorsCommitted = 0;
@@ -62,12 +65,14 @@ export class GamePage implements OnInit {
       case 'answer':
         this.answerReceived(event.correctAnswer);
         break;
+      case 'wildcard':
+        this.wildcardApplied();
     }
 
   }
 
   private answerReceived(correctAnswer: boolean) {
-    if (this.config.gameOver) { return; }
+    if (this.config.gameOver) { return false; }
     this.config.questionNumber++;
     correctAnswer ? this.correctAnswerCommited() : this.newErrorCommited();
   }
@@ -78,7 +83,20 @@ export class GamePage implements OnInit {
 
   private newErrorCommited() {
     this.config.errorsCommitted++;
-    this.config.errorsCommitted === this.config.errorsAllowed ? this.nofityChangeInGame('gameOver') : this.nofityChangeInGame('wrongAnswer');
+    if (this.config.errorsCommitted === this.config.errorsAllowed) {
+      this.config.gameOver = true;
+      this.nofityChangeInGame('gameOver')
+    } else {
+      this.nofityChangeInGame('wrongAnswer');
+    };
+
+  }
+
+  private wildcardApplied() {
+    if (!this.config.wildcardApplied) {
+      this.config.wildcardApplied = true;
+      this.nofityChangeInGame('wildcard');
+    }
   }
 
   private nofityChangeInGame(event?: string): void {

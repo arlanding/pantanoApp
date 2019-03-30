@@ -1,6 +1,6 @@
 <ion-toolbar>
   <ion-buttons slot="secondary">
-    <ion-button>
+    <ion-button (click)="applyWildcard()" [disabled]="disableWildcard">
       <ion-icon slot="icon-only" name="gift"></ion-icon>
     </ion-button>
   </ion-buttons>
