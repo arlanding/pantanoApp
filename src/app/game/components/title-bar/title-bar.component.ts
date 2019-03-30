@@ -10,6 +10,8 @@ export class TitleBarComponent implements OnInit, OnDestroy {
 
   private $gameSubscription;
   public nick;
+  public stats = false;
+  public matches: {};
 
   constructor() { }
 
@@ -17,6 +19,10 @@ export class TitleBarComponent implements OnInit, OnDestroy {
     this.$gameSubscription = this.game.subscribe(change => {
       if (change.event === 'startGame') {
         this.nick = change.nickname;
+        if(change.matches.win > 0 || change.matches.lose > 0){
+          this.stats = true;
+          this.matches = change.matches;
+        }
       }
     });
   }
