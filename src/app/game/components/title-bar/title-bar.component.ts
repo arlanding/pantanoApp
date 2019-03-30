@@ -9,14 +9,14 @@ export class TitleBarComponent implements OnInit, OnDestroy {
   @Input() game;
 
   private $gameSubscription;
-  public questionNumber = 0;
+  public nick;
 
   constructor() { }
 
   ngOnInit(): void {
     this.$gameSubscription = this.game.subscribe(change => {
-      if (change.event !== 'gameOver') {
-        this.questionNumber = change.questionNumber;
+      if (change.event === 'startGame') {
+        this.nick = change.nickname;
       }
     });
   }

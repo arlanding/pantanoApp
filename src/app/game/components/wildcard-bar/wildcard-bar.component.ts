@@ -15,11 +15,13 @@ export class WildcardBarComponent implements OnInit, OnDestroy {
   private $animationSubscription;
   public errorsCommitted = 0;
   public disableWildcard = true;
+  public questionNumber = 0;
 
   constructor() { }
 
   ngOnInit(): void {
     this.$gameSubscription = this.game.subscribe(change => {
+      this.questionNumber = change.questionNumber;
       if (!change.wildcardApplied && !change.gameOver) {
         this.disableWildcard = false;
       }

@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { GameService } from './services/game.service';
 import { Subject } from 'rxjs';
-import { AlertController } from '@ionic/angular';
+import { AlertController, ModalController } from '@ionic/angular';
+import { WelcomeComponent } from './components/welcome/welcome.component';
 
 export interface GameConfigInterface {
   start: boolean,
@@ -12,7 +13,8 @@ export interface GameConfigInterface {
   questionNumber: number,
   errorsCommitted: number,
   errorsAllowed: number,
-  matches: { win:number, lose:number }
+  matches: { win:number, lose:number },
+  nickname: string
 }
 
 @Component({
@@ -34,15 +36,33 @@ export class GamePage implements OnInit {
     questionNumber: 1,
     errorsCommitted: 0,
     errorsAllowed: 2,
-    matches: { win: 0, lose: 0 }
+    matches: { win: 0, lose: 0 },
+    nickname: 'jugador'
   }
   public game$ = this.gameSubj.asObservable();
   public animation$ = this.animationSubj.asObservable();
 
-  constructor(private gameService: GameService, public alertController: AlertController) { }
+  constructor(
+    private gameService: GameService, 
+    private modalController: ModalController,
+    public alertController: AlertController) { }
 
   ngOnInit() {
     this.presentAlert();
+  }
+
+  async presentModal() {
+    const modal = await this.modalController.create({
+      component: WelcomeComponent,
+      backdropDismiss: false,
+      keyboardClose: false,
+      mode: 'ios',
+      componentProps: { value: 123 }
+    });
+    await modal.present();
+    const { data } = await modal.onDidDismiss();
+    this.config.nickname = data;
+    this.startNewGame();
   }
 
   private startNewGame() {
@@ -128,7 +148,7 @@ export class GamePage implements OnInit {
           text: 'Empezar',
           role: 'comenzar',
           handler: () => {
-            this.startNewGame();
+            this.presentModal();
           }
         }
       ]

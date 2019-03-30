@@ -12,6 +12,7 @@ import { StatsBarComponent } from './components/stats-bar/stats-bar.component';
 import { TimerComponent } from './components/timer/timer.component';
 import { WildcardBarComponent } from './components/wildcard-bar/wildcard-bar.component';
 import { TitleBarComponent } from './components/title-bar/title-bar.component';
+import { WelcomeComponent } from './components/welcome/welcome.component';
 
 const routes: Routes = [
   {
@@ -27,6 +28,18 @@ const routes: Routes = [
     IonicModule,
     RouterModule.forChild(routes)
   ],
-  declarations: [GamePage, QuestionComponent, AnimationComponent, StatsBarComponent, TimerComponent, WildcardBarComponent, TitleBarComponent]
+  declarations: [
+    GamePage, 
+    QuestionComponent, 
+    AnimationComponent, 
+    StatsBarComponent, 
+    TimerComponent, 
+    WildcardBarComponent, 
+    TitleBarComponent,
+    WelcomeComponent
+  ],
+  entryComponents:[
+    WelcomeComponent
+  ]
 })
 export class GamePageModule { }

@@ -1,0 +1,16 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Juego del pantano 🌾</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content padding>
+  <section>
+    <ion-label>Nickname</ion-label>
+    <ion-input type="text" [ngClass]="{error: error}" [(ngModel)]="nick" minlength="3" maxlength="8" placeholder="Ingresa un nick para esta partida"></ion-input>
+    <small>* Deberá tener entre 3 y 8 caracteres</small>
+    <ion-button color="primary" margin-top (click)="confirmNickname()">
+      Confirmar
+    </ion-button>
+  </section>
+</ion-content>
