@@ -3,6 +3,7 @@ import { GameService } from './services/game.service';
 import { Subject } from 'rxjs';
 import { AlertController, ModalController } from '@ionic/angular';
 import { WelcomeComponent } from './components/welcome/welcome.component';
+import { SessionService } from '../shared/services/session.service';
 
 export interface GameConfigInterface {
   start: boolean,
@@ -13,7 +14,7 @@ export interface GameConfigInterface {
   questionNumber: number,
   errorsCommitted: number,
   errorsAllowed: number,
-  matches: { win:number, lose:number },
+  matches: { win: number, lose: number },
   nickname: string
 }
 
@@ -43,26 +44,37 @@ export class GamePage implements OnInit {
   public animation$ = this.animationSubj.asObservable();
 
   constructor(
-    private gameService: GameService, 
+    private gameService: GameService,
     private modalController: ModalController,
-    public alertController: AlertController) { }
+    private sessionService: SessionService,
+    public alertController: AlertController
+  ) { }
 
   ngOnInit() {
     this.presentAlert();
   }
 
   async presentModal() {
-    const modal = await this.modalController.create({
-      component: WelcomeComponent,
-      backdropDismiss: false,
-      keyboardClose: false,
-      mode: 'ios',
-      componentProps: { value: 123 }
-    });
-    await modal.present();
-    const { data } = await modal.onDidDismiss();
-    this.config.nickname = data;
-    this.startNewGame();
+    if(this.sessionService.isNewUser()){
+      const modal = await this.modalController.create({
+        component: WelcomeComponent,
+        backdropDismiss: false,
+        keyboardClose: false,
+        mode: 'ios',
+        componentProps: { value: 123 }
+      });
+      await modal.present();
+      const { data } = await modal.onDidDismiss();
+      this.config.nickname = data;
+      this.sessionService.setUserInfo(this.config);
+      this.startNewGame();
+    } else { 
+      const userInfo = this.sessionService.getUserInfo();
+      this.config.nickname = userInfo.nickname;
+      this.config.matches = userInfo.matches;
+      this.startNewGame();
+    }
+
   }
 
   private startNewGame() {
@@ -126,9 +138,9 @@ export class GamePage implements OnInit {
     const change = { event: event, ...this.config }
     this.animationSubj.next(change);
     // Wait 2600 miliseconds making fluid game sense
-    setTimeout(()=>{
+    setTimeout(() => {
       this.gameSubj.next(change);
-    },2600);
+    }, 2600);
   }
 
   private initChildEventReceived() {
@@ -142,7 +154,7 @@ export class GamePage implements OnInit {
     const alert = await this.alertController.create({
       header: 'Juego versión Beta',
       message: 'Esta es una versión de prueba del juego. Pronto estará la versión completa',
-      backdropDismiss: false,      
+      backdropDismiss: false,
       buttons: [
         {
           text: 'Empezar',

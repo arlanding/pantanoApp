@@ -3,9 +3,10 @@ import { CommonModule } from '@angular/common';
 import { HeaderComponent } from './components/header/header.component';
 import { IonicModule } from '@ionic/angular';
 import { FormatFilterPipe } from './pipes/format-filter.pipe';
+import { SessionService } from './services/session.service';
 
 @NgModule({
-  declarations: [ HeaderComponent, FormatFilterPipe ],
+  declarations: [ HeaderComponent, FormatFilterPipe, ],
   imports: [
     IonicModule,
     CommonModule
