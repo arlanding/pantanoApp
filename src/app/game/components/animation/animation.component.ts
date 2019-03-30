@@ -6,9 +6,9 @@ import { Component, OnInit, Input, OnDestroy } from '@angular/core';
   styleUrls: ['./animation.component.scss'],
 })
 export class AnimationComponent implements OnInit, OnDestroy {
-  @Input() game;
+  @Input() animation;
 
-  private $gameSubscription;
+  private $animationSubscription;
   public animationConfig = {
     win: false,
     lose: false,
@@ -19,7 +19,7 @@ export class AnimationComponent implements OnInit, OnDestroy {
   constructor() { }
 
   ngOnInit(): void {
-    this.$gameSubscription = this.game.subscribe(change => {
+    this.$animationSubscription = this.animation.subscribe(change => {
       switch (change.event) {
         case 'correctAnswer':
           this.animationConfig.idle = false;
@@ -44,7 +44,7 @@ export class AnimationComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.$gameSubscription.unsubscribe();
+    this.$animationSubscription.unsubscribe();
   }
 
 }

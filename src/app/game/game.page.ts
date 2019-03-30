@@ -12,6 +12,7 @@ export interface GameConfigInterface {
   questionNumber: number,
   errorsCommitted: number,
   errorsAllowed: number,
+  matches: { win:number, lose:number }
 }
 
 @Component({
@@ -22,7 +23,8 @@ export interface GameConfigInterface {
 })
 export class GamePage implements OnInit {
 
-  private newGameSubj: Subject<any> = new Subject();
+  private gameSubj: Subject<any> = new Subject();
+  private animationSubj: Subject<any> = new Subject();
   private config: GameConfigInterface = {
     start: false,
     gameOver: false,
@@ -31,9 +33,11 @@ export class GamePage implements OnInit {
     childsInitialized: 0,
     questionNumber: 1,
     errorsCommitted: 0,
-    errorsAllowed: 2
+    errorsAllowed: 2,
+    matches: { win: 0, lose: 0 }
   }
-  public game$ = this.newGameSubj.asObservable();
+  public game$ = this.gameSubj.asObservable();
+  public animation$ = this.animationSubj.asObservable();
 
   constructor(private gameService: GameService, public alertController: AlertController) { }
 
@@ -89,7 +93,6 @@ export class GamePage implements OnInit {
     } else {
       this.nofityChangeInGame('wrongAnswer');
     };
-
   }
 
   private wildcardApplied() {
@@ -101,7 +104,11 @@ export class GamePage implements OnInit {
 
   private nofityChangeInGame(event?: string): void {
     const change = { event: event, ...this.config }
-    this.newGameSubj.next(change);
+    this.animationSubj.next(change);
+    // Wait 2600 miliseconds making fluid game sense
+    setTimeout(()=>{
+      this.gameSubj.next(change);
+    },2600);
   }
 
   private initChildEventReceived() {
@@ -115,6 +122,7 @@ export class GamePage implements OnInit {
     const alert = await this.alertController.create({
       header: 'Juego versión Beta',
       message: 'Esta es una versión de prueba del juego. Pronto estará la versión completa',
+      backdropDismiss: false,      
       buttons: [
         {
           text: 'Empezar',

@@ -7,10 +7,12 @@ import { Component, OnInit, Input, OnDestroy, Output, EventEmitter } from '@angu
 })
 export class TimerComponent implements OnInit, OnDestroy {
   @Input() game;
+  @Input() animation;
   @Output()
   event: EventEmitter<any> = new EventEmitter();
 
   private $gameSubscription;
+  private $animationSubscription;
   private interval;
   public timePct = 1.0;
 
@@ -18,18 +20,18 @@ export class TimerComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.$gameSubscription = this.game.subscribe(change => {
+      if (change.event !== 'gameOver' && change.event !== 'wildcard') {
+        if (this.interval) clearInterval(this.interval);
+        this.restartTimer()
+      }
+    });
+    this.$animationSubscription = this.animation.subscribe(change => {
       switch (change.event) {
-        case 'gameOver':
-          if (this.interval) clearInterval(this.interval);
-          break;
         case 'wildcard':
           this.resetTimePct();
           break;
         default:
           if (this.interval) clearInterval(this.interval);
-          setTimeout(() => {
-            this.restartTimer()
-          }, 2600);
           break;
       }
     });
@@ -58,6 +60,7 @@ export class TimerComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.$gameSubscription.unsubscribe();
+    this.$animationSubscription.unsubscribe();
   }
 
 }

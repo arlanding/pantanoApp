@@ -12,30 +12,30 @@ export class QuestionComponent implements OnInit, OnDestroy {
 
   private $gameSubscription;
   public question: string = '';
-  public answers = ['','']
+  public answers = ['', '']
   public disabled = true;
 
   private questionConfig = {
     correctAnswer: ''
   }
 
-  constructor() { 
+  constructor() {
 
   }
 
   ngOnInit(): void {
     this.$gameSubscription = this.game.subscribe(change => {
-      // TODO: Check following conditional
-      if(change.event !== 'gameOver'){
-        setTimeout(()=>{
-          this.renderQuestion(change.gameQuestions[change.questionNumber - 1]);
-        },2600);
+      if (change.event !== 'gameOver' && change.event !== 'wildcard') {
+        this.renderQuestion(change.gameQuestions[change.questionNumber - 1]);
+      }
+      if(change.event === 'gameOver'){
+        this.disabled = true;
       }
     });
     this.emit({ eventName: 'init' });
   }
 
-  public answerQuestion(userAnswer){
+  public answerQuestion(userAnswer) {
     this.disabled = true;
     const correctAnswerEmmiter = { eventName: 'answer', correctAnswer: true };
     const incorrectAnswerEmmiter = { eventName: 'answer', correctAnswer: false };
@@ -49,7 +49,7 @@ export class QuestionComponent implements OnInit, OnDestroy {
     // Assign received question for render
     this.question = question.quest;
     // Get random answers positions
-    let indexAnswers = [0,1]    
+    let indexAnswers = [0, 1]
     indexAnswers = this.getRandomOrder(indexAnswers);
     // Assign received answers for render
     this.answers[indexAnswers[0]] = question.ans;
@@ -58,17 +58,17 @@ export class QuestionComponent implements OnInit, OnDestroy {
     this.disabled = false;
   }
 
-  private emit(emition){
-    this.event.emit({ child: 'question', ...emition});
+  private emit(emition) {
+    this.event.emit({ child: 'question', ...emition });
   }
 
   ngOnDestroy(): void {
     this.$gameSubscription.unsubscribe();
-  }  
+  }
 
   private getRandomOrder(array) {
     var tmp, current, top = array.length;
-    if(top) while(--top) {
+    if (top) while (--top) {
       current = Math.floor(Math.random() * (top + 1));
       tmp = array[current];
       array[current] = array[top];

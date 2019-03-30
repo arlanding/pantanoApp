@@ -16,9 +16,7 @@ export class TitleBarComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.$gameSubscription = this.game.subscribe(change => {
       if (change.event !== 'gameOver') {
-        setTimeout(() => {
-          this.questionNumber = change.questionNumber;
-        }, 2600);
+        this.questionNumber = change.questionNumber;
       }
     });
   }

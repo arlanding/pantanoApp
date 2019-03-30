@@ -7,10 +7,12 @@ import { Component, OnInit, Input, OnDestroy, Output, EventEmitter } from '@angu
 })
 export class WildcardBarComponent implements OnInit, OnDestroy {
   @Input() game;
+  @Input() animation;
   @Output()
   event: EventEmitter<any> = new EventEmitter();
 
   private $gameSubscription;
+  private $animationSubscription;
   public errorsCommitted = 0;
   public disableWildcard = false;
 
@@ -18,6 +20,12 @@ export class WildcardBarComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.$gameSubscription = this.game.subscribe(change => {
+      if (!change.wildcardApplied && !change.gameOver) {
+        this.disableWildcard = false;
+      }
+    });
+    this.$animationSubscription = this.animation.subscribe(change => {
+      this.disableWildcard = true;
       switch (change.event) {
         case 'wildcard':
           this.disableWildcard = change.wildcardApplied;
@@ -29,7 +37,6 @@ export class WildcardBarComponent implements OnInit, OnDestroy {
           this.errorsCommitted = change.errorsCommitted;
           break;
       }
-
     });
     this.emit({ eventName: 'init' });
   }
@@ -44,6 +51,7 @@ export class WildcardBarComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.$gameSubscription.unsubscribe();
+    this.$animationSubscription.unsubscribe();
   }
 
 }
