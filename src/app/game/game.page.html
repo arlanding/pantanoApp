@@ -1,6 +1,6 @@
 <pantano-header></pantano-header>
 
-<ion-content *ngIf="config.start">
+<ion-content *ngIf="start">
     <main>
         <pantano-title-bar [game]="game$"></pantano-title-bar>
         <pantano-stats-bar [game]="game$"></pantano-stats-bar>     
@@ -9,7 +9,7 @@
         <pantano-wildcard-bar [game]="game$" [animation]="animation$" (event)="childEvent($event)"></pantano-wildcard-bar>
     </main>
 </ion-content>
-<ion-footer *ngIf="config.start">
+<ion-footer *ngIf="start">
     <ion-toolbar color="dark">
         <pantano-question [game]="game$" [animation]="animation$" (event)="childEvent($event)"></pantano-question>
     </ion-toolbar>
