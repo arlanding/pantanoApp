@@ -1,3 +1,9 @@
 :host{
     width: 100%;
+
+    #wildcard{
+        ion-badge{
+            margin-left: -15px;
+        }
+    }  
 }

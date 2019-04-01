@@ -16,6 +16,7 @@ export class WildcardBarComponent implements OnInit, OnDestroy {
   public errorsCommitted = 0;
   public disableWildcard = true;
   public questionNumber = 0;
+  public wildcardsRemaining = 1;
 
   constructor() { }
 
@@ -31,6 +32,7 @@ export class WildcardBarComponent implements OnInit, OnDestroy {
       switch (change.event) {
         case 'wildcard':
           this.disableWildcard = change.wildcardApplied;
+          this.wildcardsRemaining--;
           break;
         case 'wrongAnswer':
           this.errorsCommitted = change.errorsCommitted;
