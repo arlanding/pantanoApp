@@ -123,7 +123,7 @@ export class QuestionsPage implements OnInit {
           return +row.number === +filter;
         } else {
           const search = this.formatSearch(filter);
-          return new RegExp("\\b" + search + "\\b").test(row.quest_for_search);
+          return new RegExp("\\b" + search + "\\b").test(row.question_for_search);
         }
       });
     });
@@ -142,7 +142,7 @@ export class QuestionsPage implements OnInit {
     } else {
       // Every question has a category property, so filter them getting only the ones that has the received category by parameter
       questionsFilteredByCategory = _.filter(this.originalQuestions, (question) => {
-        return question.category.indexOf(category.value) > -1;
+        return question.categories.indexOf(category.value) > -1;
       })
     }
     return questionsFilteredByCategory;
