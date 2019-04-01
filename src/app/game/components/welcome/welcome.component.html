@@ -6,11 +6,28 @@
 
 <ion-content padding>
   <section>
-    <ion-label>Nickname</ion-label>
-    <ion-input type="text" [ngClass]="{error: error}" [(ngModel)]="nick" minlength="3" maxlength="8" placeholder="Ingresa un nick para esta partida"></ion-input>
-    <small>* Deberá tener entre 3 y 8 caracteres</small>
+
+    <ion-card color="secondary">
+      <ion-card-header>
+        <ion-card-subtitle>* Información personal</ion-card-subtitle>
+      </ion-card-header>
+      <ion-card-content>
+        Esta versión de prueba no guardará sus datos. Al refrescar la ventana perderá el progreso.
+      </ion-card-content>
+    </ion-card>
+
+    <ion-label>Nickname <small class="required">*</small><small>Deberá tener entre 3 y 8 caracteres</small></ion-label>
+    <ion-input type="text" [ngClass]="{error: error}" [(ngModel)]="userData.nickname" minlength="3" maxlength="8"
+      placeholder="Ingresa un nick para esta partida"></ion-input>
+
+    <ion-label>Email <small>(Opcional)</small></ion-label>
+    <ion-input type="email" [(ngModel)]="userData.email" maxlength="50" placeholder="email@ejemplo.com"></ion-input>
+    <ion-label>Instagram <small>(Opcional)</small></ion-label>
+    <ion-input type="text" [(ngModel)]="userData.instagram" maxlength="15" placeholder="pantanoapp"></ion-input>
+
     <ion-button color="primary" margin-top (click)="confirmNickname()">
-      Confirmar
+      Comenzar
     </ion-button>
+
   </section>
 </ion-content>

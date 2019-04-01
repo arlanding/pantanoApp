@@ -1,29 +1,30 @@
 import { Injectable } from '@angular/core';
+import { UserInfo } from '../interfaces/user-info';
 
 @Injectable({
   providedIn: 'root'
 })
 export class SessionService {
-  
+
   private newUser = true;
-  private userInfo = {
-    nickname: '',
-    matches: { win: 0, lose: 0}
+  private userInfo: UserInfo = {
+    userData: { nickname: '', email: '', instagram: '' },
+    matches: { win: 0, lose: 0 }
   };
 
   constructor() { }
 
-  public isNewUser():boolean {
+  public isNewUser(): boolean {
     return this.newUser;
   }
 
-  public setUserInfo(config):void {
+  public setUserInfo(config): void {
     this.newUser = false;
-    this.userInfo.nickname = config.nickname;
+    this.userInfo.userData = config.userData;
     this.userInfo.matches = config.matches;
   }
 
-  public getUserInfo():{ nickname: string, matches: { win: number, lose: number }}{
+  public getUserInfo(): UserInfo {
     return this.userInfo;
   }
 

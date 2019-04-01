@@ -4,19 +4,8 @@ import { Subject } from 'rxjs';
 import { AlertController, ModalController } from '@ionic/angular';
 import { WelcomeComponent } from './components/welcome/welcome.component';
 import { SessionService } from '../shared/services/session.service';
-
-export interface GameConfigInterface {
-  start: boolean,
-  gameOver: boolean,
-  wildcardApplied: boolean
-  gameQuestions: any,
-  childsInitialized: number,
-  questionNumber: number,
-  errorsCommitted: number,
-  errorsAllowed: number,
-  matches: { win: number, lose: number },
-  nickname: string
-}
+import { GameConfig } from '../shared/interfaces/game-config';
+import { UserData } from '../shared/interfaces/user-data';
 
 @Component({
   selector: 'app-game',
@@ -28,7 +17,7 @@ export class GamePage implements OnInit {
 
   private gameSubj: Subject<any> = new Subject();
   private animationSubj: Subject<any> = new Subject();
-  private config: GameConfigInterface = {
+  private config: GameConfig = {
     start: false,
     gameOver: false,
     wildcardApplied: false,
@@ -38,7 +27,11 @@ export class GamePage implements OnInit {
     errorsCommitted: 0,
     errorsAllowed: 2,
     matches: { win: 0, lose: 0 },
-    nickname: 'jugador'
+    userData: {
+      nickname: '',
+      email: '',
+      instagram: ''
+    }
   }
   public game$ = this.gameSubj.asObservable();
   public animation$ = this.animationSubj.asObservable();
@@ -65,12 +58,12 @@ export class GamePage implements OnInit {
       });
       await modal.present();
       const { data } = await modal.onDidDismiss();
-      this.config.nickname = data;
+      this.config.userData.nickname = data.nickname;
       this.sessionService.setUserInfo(this.config);
       this.startNewGame();
     } else { 
       const userInfo = this.sessionService.getUserInfo();
-      this.config.nickname = userInfo.nickname;
+      this.config.userData.nickname = userInfo.userData.nickname;
       this.config.matches = userInfo.matches;
       this.startNewGame();
     }

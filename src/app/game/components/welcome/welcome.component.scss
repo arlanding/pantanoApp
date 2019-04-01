@@ -10,6 +10,29 @@
             align-items: unset;
             flex-direction: column;
 
+            ion-card{
+                margin:0px 0px 30px;
+
+                ion-card-header{
+                    padding-bottom:0px;
+                }
+
+            }
+
+            ion-label{
+                display:flex;
+                flex-direction: row;
+                align-items: baseline;
+
+                small{
+                    margin-left:5px;
+
+                    &.required{
+                        color:red;
+                    }
+                }
+            }
+
             ion-input {
                 border: 1px solid orange;
                 padding: 0px 10px !important;

@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ModalController } from '@ionic/angular';
+import { UserData } from 'src/app/shared/interfaces/user-data';
 
 @Component({
   selector: 'pantano-welcome',
@@ -9,13 +10,17 @@ import { ModalController } from '@ionic/angular';
 export class WelcomeComponent {
 
   error = false;
-  nick:string;
+  public userData: UserData = {
+    nickname: '',
+    email: '',
+    instagram: ''
+  }
 
   constructor(private modalCtrl: ModalController) { }
 
   public confirmNickname(){
-    if(this.nick && this.nick.length >= 3 && this.nick.length <= 8){
-      this.modalCtrl.dismiss(this.nick)
+    if(this.userData.nickname && this.userData.nickname.length >= 3 && this.userData.nickname.length <= 8){
+      this.modalCtrl.dismiss(this.userData)
     }else{
       this.error = true;
     }    

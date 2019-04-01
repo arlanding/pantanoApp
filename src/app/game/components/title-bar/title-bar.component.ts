@@ -9,7 +9,7 @@ export class TitleBarComponent implements OnInit, OnDestroy {
   @Input() game;
 
   private $gameSubscription;
-  public nick;
+  public nickname: string;
   public stats = false;
   public matches: {};
 
@@ -18,7 +18,7 @@ export class TitleBarComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.$gameSubscription = this.game.subscribe(change => {
       if (change.event === 'startGame') {
-        this.nick = change.nickname;
+        this.nickname = change.userData.nickname;
         if(change.matches.win > 0 || change.matches.lose > 0){
           this.stats = true;
           this.matches = change.matches;
