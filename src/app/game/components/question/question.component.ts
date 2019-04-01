@@ -7,13 +7,17 @@ import { Component, OnInit, Input, OnDestroy, Output, EventEmitter } from '@angu
 })
 export class QuestionComponent implements OnInit, OnDestroy {
   @Input() game;
+  @Input() animation;
   @Output()
   event: EventEmitter<any> = new EventEmitter();
 
   private $gameSubscription;
+  private $animationSubscription;
+  private correctAnswerPosition: number;
   public question: string = '';
   public answers = ['', '']
   public disabled = true;
+  public wildcardApplied = false;
 
   private questionConfig = {
     correctAnswer: ''
@@ -24,6 +28,11 @@ export class QuestionComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    this.$animationSubscription = this.animation.subscribe(change => {
+      if(change.event === 'wildcard'){
+        this.wildcard();
+      }
+    });
     this.$gameSubscription = this.game.subscribe(change => {
       if (change.event !== 'gameOver' && change.event !== 'wildcard' && change.event !== 'winGame') {
         this.renderQuestion(change.gameQuestions[change.questionNumber - 1]);
@@ -51,11 +60,20 @@ export class QuestionComponent implements OnInit, OnDestroy {
     // Get random answers positions
     let indexAnswers = [0, 1]
     indexAnswers = this.getRandomOrder(indexAnswers);
+    this.correctAnswerPosition = indexAnswers[0];
     // Assign received answers for render
     this.answers[indexAnswers[0]] = question.ans;
     this.answers[indexAnswers[1]] = 'fail: ' + question.ans;
     // able buttons
     this.disabled = false;
+  }
+
+  private wildcard(){
+    this.wildcardApplied = true;
+    setTimeout(()=>{
+      this.wildcardApplied = false;
+    },1000);
+
   }
 
   private emit(emition) {
@@ -64,6 +82,7 @@ export class QuestionComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.$gameSubscription.unsubscribe();
+    this.$animationSubscription.unsubscribe();
   }
 
   private getRandomOrder(array) {

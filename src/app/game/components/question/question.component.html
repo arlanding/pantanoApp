@@ -1,3 +1,11 @@
 <h2>{{question}}</h2>
-<ion-button (click)="answerQuestion(answers[0])" [disabled]="disabled" expand="block">{{answers[0]}}</ion-button>
-<ion-button (click)="answerQuestion(answers[1])" [disabled]="disabled" expand="block">{{answers[1]}}</ion-button>
+<ion-button (click)="answerQuestion(answers[0])" [disabled]="disabled" expand="block">
+    <ion-text *ngIf="wildcardApplied && correctAnswerPosition === 0">🤫👉🏻👉🏻👉🏻&nbsp;</ion-text>
+    {{answers[0]}}
+    <ion-text *ngIf="wildcardApplied && correctAnswerPosition === 0">&nbsp;👈🏻👈🏻👈🏻👈🏻🤫</ion-text>
+</ion-button>
+<ion-button [ngClass]="{clickeabled: correctAnswerPosition === 1}" (click)="answerQuestion(answers[1])" [disabled]="disabled" expand="block">
+    <ion-text *ngIf="wildcardApplied && correctAnswerPosition === 1">🤫👉🏻👉🏻👉🏻👉🏻&nbsp;</ion-text>
+    {{answers[1]}}
+    <ion-text *ngIf="wildcardApplied && correctAnswerPosition === 1">&nbsp;👈🏻👈🏻👈🏻👈🏻🤫</ion-text>
+</ion-button>

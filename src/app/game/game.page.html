@@ -11,6 +11,6 @@
 </ion-content>
 <ion-footer *ngIf="config.start">
     <ion-toolbar color="dark">
-        <pantano-question [game]="game$" (event)="childEvent($event)"></pantano-question>
+        <pantano-question [game]="game$" [animation]="animation$" (event)="childEvent($event)"></pantano-question>
     </ion-toolbar>
 </ion-footer>
