@@ -1,9 +1,11 @@
-<h2 *ngIf="animationConfig.idle && !animationConfig.lose">&nbsp;</h2>
-<h2 *ngIf="!animationConfig.idle && animationConfig.win" class="green">¡Correcto!</h2>
+<h2 *ngIf="animationConfig.idle && !animationConfig.lose && !animationConfig.win">&nbsp;</h2>
+<h2 *ngIf="!animationConfig.idle && animationConfig.correct" class="green">¡Correcto!</h2>
 <h2 *ngIf="!animationConfig.idle && animationConfig.fail" class="orange">¡Incorrecto!</h2>
-<h2 *ngIf="animationConfig.lose" class="orange">Perdiste</h2>
+<h2 *ngIf="animationConfig.win && !animationConfig.lose" class="green">Ganaste</h2>
+<h2 *ngIf="animationConfig.lose && !animationConfig.win" class="orange">Perdiste</h2>
 
-<img *ngIf="animationConfig.idle && !animationConfig.lose" src="/assets/character_idle.gif" alt="">
+<img *ngIf="animationConfig.idle && !animationConfig.lose && !animationConfig.win" src="/assets/character_idle.gif" alt="">
 <img *ngIf="!animationConfig.idle && animationConfig.fail" src="/assets/character_fail.gif" alt="">
-<img *ngIf="!animationConfig.idle && animationConfig.win" src="/assets/character_win.gif" alt="">
-<img *ngIf="animationConfig.lose" src="/assets/character_lose.gif" alt="">
+<img *ngIf="!animationConfig.idle && animationConfig.correct" src="/assets/character_win.gif" alt="">
+<img *ngIf="animationConfig.win && !animationConfig.lose" src="/assets/character_win.gif" alt="">
+<img *ngIf="animationConfig.lose && !animationConfig.win" src="/assets/character_lose.gif" alt="">

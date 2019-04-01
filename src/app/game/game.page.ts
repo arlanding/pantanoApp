@@ -20,6 +20,7 @@ export class GamePage implements OnInit {
   private config: GameConfig = {
     start: false,
     gameOver: false,
+    win: false,
     wildcardApplied: false,
     gameQuestions: [],
     childsInitialized: 0,
@@ -79,6 +80,7 @@ export class GamePage implements OnInit {
   private setNewGameProperties(newGameQuestions) {
     this.config.start = true;
     this.config.gameOver = false;
+    this.config.win = false;
     this.config.wildcardApplied = false;
     this.config.questionNumber = 1;
     this.config.gameQuestions = newGameQuestions;
@@ -101,23 +103,38 @@ export class GamePage implements OnInit {
   }
 
   private answerReceived(correctAnswer: boolean) {
-    if (this.config.gameOver) { return false; }
-    this.config.questionNumber++;
+    if (this.config.gameOver || this.config.win) { return false; }
     correctAnswer ? this.correctAnswerCommited() : this.newErrorCommited();
   }
 
   private correctAnswerCommited() {
+    if(this.config.questionNumber === this.config.gameQuestions.length){
+      return this.winCommited();
+    }
+    this.config.questionNumber++;
     this.nofityChangeInGame('correctAnswer');
   }
 
   private newErrorCommited() {
     this.config.errorsCommitted++;
     if (this.config.errorsCommitted === this.config.errorsAllowed) {
-      this.config.gameOver = true;
-      this.nofityChangeInGame('gameOver')
+      return this.loseCommited();
     } else {
+      this.config.questionNumber++;
       this.nofityChangeInGame('wrongAnswer');
     };
+  }
+
+  private winCommited(){
+    this.config.win = true;
+    this.config.matches.win++;
+    this.nofityChangeInGame('winGame')
+  }
+
+  private loseCommited(){
+    this.config.gameOver = true;
+    this.config.matches.lose++;
+    this.nofityChangeInGame('gameOver')
   }
 
   private wildcardApplied() {

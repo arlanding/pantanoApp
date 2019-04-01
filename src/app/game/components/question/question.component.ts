@@ -25,10 +25,10 @@ export class QuestionComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.$gameSubscription = this.game.subscribe(change => {
-      if (change.event !== 'gameOver' && change.event !== 'wildcard') {
+      if (change.event !== 'gameOver' && change.event !== 'wildcard' && change.event !== 'winGame') {
         this.renderQuestion(change.gameQuestions[change.questionNumber - 1]);
       }
-      if(change.event === 'gameOver'){
+      if(change.lose || change.win){
         this.disabled = true;
       }
     });

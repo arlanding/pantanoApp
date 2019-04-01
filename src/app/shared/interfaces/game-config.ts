@@ -3,6 +3,7 @@ import { UserData } from './user-data';
 export interface GameConfig {
     start: boolean,
     gameOver: boolean,
+    win: boolean,
     wildcardApplied: boolean
     gameQuestions: any,
     childsInitialized: number,

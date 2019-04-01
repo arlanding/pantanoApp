@@ -20,7 +20,7 @@ export class TimerComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.$gameSubscription = this.game.subscribe(change => {
-      if (change.event !== 'gameOver' && change.event !== 'wildcard') {
+      if (change.event !== 'gameOver' && change.event !== 'wildcard' && change.event !== 'winGame') {
         if (this.interval) clearInterval(this.interval);
         this.restartTimer()
       }

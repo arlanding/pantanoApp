@@ -10,9 +10,10 @@ export class AnimationComponent implements OnInit, OnDestroy {
 
   private $animationSubscription;
   public animationConfig = {
-    win: false,
+    correct: false,
     lose: false,
     fail: false,
+    win: false,
     idle: true
   }
 
@@ -23,7 +24,7 @@ export class AnimationComponent implements OnInit, OnDestroy {
       switch (change.event) {
         case 'correctAnswer':
           this.animationConfig.idle = false;
-          this.animationConfig.win = true;
+          this.animationConfig.correct = true;
           break;
         case 'wrongAnswer':
           this.animationConfig.idle = false;
@@ -33,11 +34,15 @@ export class AnimationComponent implements OnInit, OnDestroy {
           this.animationConfig.idle = false;
           this.animationConfig.lose = true;
           break;
+        case 'winGame':
+          this.animationConfig.idle = false;
+          this.animationConfig.win = true;
+          break;
       }
 
       setTimeout(() => {
         this.animationConfig.idle = true;
-        this.animationConfig.win = false;
+        this.animationConfig.correct = false;
         this.animationConfig.fail = false;
       }, 2000);
     });
