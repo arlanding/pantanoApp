@@ -21,7 +21,8 @@ export class SessionService {
   public setUserInfo(config): void {
     this.newUser = false;
     this.userInfo.userData = config.userData;
-    this.userInfo.matches = config.matches;
+    this.userInfo.matches.win = config.matches.win;
+    this.userInfo.matches.lose = config.matches.lose;
   }
 
   public getUserInfo(): UserInfo {

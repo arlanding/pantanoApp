@@ -6,6 +6,7 @@ export interface GameConfig {
     win: boolean,
     wildcardApplied: boolean
     gameQuestions: any,
+    qtyOfQuestions: number,
     childsInitialized: number,
     questionNumber: number,
     errorsCommitted: number,

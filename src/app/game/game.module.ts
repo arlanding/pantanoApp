@@ -13,6 +13,7 @@ import { TimerComponent } from './components/timer/timer.component';
 import { WildcardBarComponent } from './components/wildcard-bar/wildcard-bar.component';
 import { TitleBarComponent } from './components/title-bar/title-bar.component';
 import { WelcomeComponent } from './components/welcome/welcome.component';
+import { InvitePlayAgainComponent } from './components/invite-play-again/invite-play-again.component';
 
 const routes: Routes = [
   {
@@ -36,10 +37,12 @@ const routes: Routes = [
     TimerComponent, 
     WildcardBarComponent, 
     TitleBarComponent,
-    WelcomeComponent
+    WelcomeComponent,
+    InvitePlayAgainComponent
   ],
   entryComponents:[
-    WelcomeComponent
+    WelcomeComponent,
+    InvitePlayAgainComponent
   ]
 })
 export class GamePageModule { }

@@ -5,7 +5,7 @@ import { AlertController, ModalController } from '@ionic/angular';
 import { WelcomeComponent } from './components/welcome/welcome.component';
 import { SessionService } from '../shared/services/session.service';
 import { GameConfig } from '../shared/interfaces/game-config';
-import { UserData } from '../shared/interfaces/user-data';
+import { InvitePlayAgainComponent } from './components/invite-play-again/invite-play-again.component';
 
 @Component({
   selector: 'app-game',
@@ -23,6 +23,7 @@ export class GamePage implements OnInit {
     win: false,
     wildcardApplied: false,
     gameQuestions: [],
+    qtyOfQuestions: 2,
     childsInitialized: 0,
     questionNumber: 1,
     errorsCommitted: 0,
@@ -49,42 +50,43 @@ export class GamePage implements OnInit {
   }
 
   async presentModal() {
-    if(this.sessionService.isNewUser()){
-      const modal = await this.modalController.create({
-        component: WelcomeComponent,
-        backdropDismiss: false,
-        keyboardClose: false,
-        mode: 'ios',
-        componentProps: { value: 123 }
-      });
-      await modal.present();
-      const { data } = await modal.onDidDismiss();
-      this.config.userData.nickname = data.nickname;
-      this.sessionService.setUserInfo(this.config);
-      this.startNewGame();
-    } else { 
-      const userInfo = this.sessionService.getUserInfo();
-      this.config.userData.nickname = userInfo.userData.nickname;
-      this.config.matches = userInfo.matches;
-      this.startNewGame();
-    }
+    /*     if(this.sessionService.isNewUser()){
+          const modal = await this.modalController.create({
+            component: WelcomeComponent,
+            backdropDismiss: false,
+            keyboardClose: false,
+            mode: 'ios',
+            componentProps: { value: 123 }
+          });
+          await modal.present();
+          const { data } = await modal.onDidDismiss();
+          this.config.userData.nickname = data.nickname;
+          this.sessionService.setUserInfo(this.config);
+          this.startNewGame();
+        } else { 
+          const userInfo = this.sessionService.getUserInfo();
+          this.config.userData.nickname = userInfo.userData.nickname;
+          this.config.matches = userInfo.matches;
+          this.startNewGame();
+        } */
+    this.startNewGame();
 
   }
 
   private startNewGame() {
-    this.gameService.getGame().subscribe(newGameQuestions => {
+    this.gameService.getGame(this.config.qtyOfQuestions).subscribe(newGameQuestions => {
       this.setNewGameProperties(newGameQuestions);
     });
   }
 
   private setNewGameProperties(newGameQuestions) {
-    this.config.start = true;
     this.config.gameOver = false;
     this.config.win = false;
     this.config.wildcardApplied = false;
     this.config.questionNumber = 1;
     this.config.gameQuestions = newGameQuestions;
     this.config.errorsCommitted = 0;
+    this.config.start = true;
   }
 
   public childEvent(event) {
@@ -108,7 +110,7 @@ export class GamePage implements OnInit {
   }
 
   private correctAnswerCommited() {
-    if(this.config.questionNumber === this.config.gameQuestions.length){
+    if (this.config.questionNumber === this.config.gameQuestions.length) {
       return this.winCommited();
     }
     this.config.questionNumber++;
@@ -125,16 +127,18 @@ export class GamePage implements OnInit {
     };
   }
 
-  private winCommited(){
+  private winCommited() {
     this.config.win = true;
     this.config.matches.win++;
-    this.nofityChangeInGame('winGame')
+    this.nofityChangeInGame('winGame');
+    this.endMatch();
   }
 
-  private loseCommited(){
+  private loseCommited() {
     this.config.gameOver = true;
     this.config.matches.lose++;
-    this.nofityChangeInGame('gameOver')
+    this.nofityChangeInGame('gameOver');
+    this.endMatch();
   }
 
   private wildcardApplied() {
@@ -151,6 +155,35 @@ export class GamePage implements OnInit {
     setTimeout(() => {
       this.gameSubj.next(change);
     }, 2600);
+  }
+
+  private endMatch() {
+    // TODO: Send user info to BE
+    this.gameService.postUserMatchData(this.config);
+    this.sessionService.setUserInfo(this.config);
+    setTimeout(() => {
+      this.config.start = false;
+      this.invitePlayAgain();
+    }, 3000)
+  }
+
+  async invitePlayAgain() {
+    const userMatchInfo = {
+      win: this.config.win,
+      lose: this.config.gameOver,
+      matches: this.config.matches,
+      nickname: this.config.userData.nickname,
+      wildcardApplied: this.config.wildcardApplied
+    }
+    const modal = await this.modalController.create({
+      component: InvitePlayAgainComponent,
+      backdropDismiss: true,
+      keyboardClose: false,
+      mode: 'ios',
+      componentProps: { matchInfo: userMatchInfo }
+    });
+    await modal.present();
+    this.startNewGame();
   }
 
   private initChildEventReceived() {
