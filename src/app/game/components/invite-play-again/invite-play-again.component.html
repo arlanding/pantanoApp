@@ -1,3 +1,56 @@
-<p>
-  invite-play-again works!
-</p>
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Pantano App 🌾</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content padding>
+  <section>
+
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title *ngIf="matchInfo.win">Ganaste <strong>{{matchInfo.nickname}}</strong> 🤩🌾</ion-card-title>
+        <ion-card-title color="success" *ngIf="matchInfo.win && !matchInfo.wildcardApplied">y sin usar comodín 👏🏼
+        </ion-card-title>
+        <ion-card-title *ngIf="matchInfo.lose">Perdiste <strong>{{matchInfo.nickname}}</strong> 😬🌾</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <ion-card-subtitle>Historial de la sesión</ion-card-subtitle>
+        <ion-card-title>
+          <ion-text color="primary">
+            Ganaste: {{matchInfo.matches.win}}
+            <ion-text *ngIf="matchInfo.matches.win === 1">partida</ion-text>
+            <ion-text *ngIf="matchInfo.matches.win !== 1">partidas</ion-text>
+          </ion-text>
+        </ion-card-title>
+        <ion-card-title>
+          <ion-text color="dark">
+            Perdiste: {{matchInfo.matches.lose}}
+            <ion-text *ngIf="matchInfo.matches.lose === 1">partida</ion-text>
+            <ion-text *ngIf="matchInfo.matches.lose !== 1">partidas</ion-text>
+          </ion-text>
+        </ion-card-title>
+
+      </ion-card-content>
+    </ion-card>
+
+    <ion-card color="success">
+      <ion-card-content>
+        <ion-card-subtitle>Sacá un screenshot a este resultado y compartilo con el hashtag:
+           <br><br> 
+           <ion-button>
+             <ion-icon slot="icon-only" name="logo-instagram"></ion-icon>
+             &nbsp;#pantanoapp 
+           </ion-button>
+           <br><br>
+           Jugá en pantanoapp.com.ar 📲
+          </ion-card-subtitle>
+      </ion-card-content>
+    </ion-card>
+
+    <ion-button color="primary" margin-top (click)="playAgain()">
+      Jugar de nuevo
+    </ion-button>
+
+  </section>
+</ion-content>

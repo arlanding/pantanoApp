@@ -23,7 +23,7 @@ export class GamePage implements OnInit {
     win: false,
     wildcardApplied: false,
     gameQuestions: [],
-    qtyOfQuestions: 2,
+    qtyOfQuestions: 10,
     childsInitialized: 0,
     questionNumber: 1,
     errorsCommitted: 0,
@@ -50,27 +50,25 @@ export class GamePage implements OnInit {
   }
 
   async presentModal() {
-    /*     if(this.sessionService.isNewUser()){
-          const modal = await this.modalController.create({
-            component: WelcomeComponent,
-            backdropDismiss: false,
-            keyboardClose: false,
-            mode: 'ios',
-            componentProps: { value: 123 }
-          });
-          await modal.present();
-          const { data } = await modal.onDidDismiss();
-          this.config.userData.nickname = data.nickname;
-          this.sessionService.setUserInfo(this.config);
-          this.startNewGame();
-        } else { 
-          const userInfo = this.sessionService.getUserInfo();
-          this.config.userData.nickname = userInfo.userData.nickname;
-          this.config.matches = userInfo.matches;
-          this.startNewGame();
-        } */
-    this.startNewGame();
-
+    if (this.sessionService.isNewUser()) {
+      const modal = await this.modalController.create({
+        component: WelcomeComponent,
+        backdropDismiss: false,
+        keyboardClose: false,
+        mode: 'ios',
+        componentProps: { value: 123 }
+      });
+      await modal.present();
+      const { data } = await modal.onDidDismiss();
+      this.config.userData.nickname = data.nickname;
+      this.sessionService.setUserInfo(this.config);
+      this.startNewGame();
+    } else {
+      const userInfo = this.sessionService.getUserInfo();
+      this.config.userData.nickname = userInfo.userData.nickname;
+      this.config.matches = userInfo.matches;
+      this.startNewGame();
+    }
   }
 
   private startNewGame() {
@@ -90,7 +88,6 @@ export class GamePage implements OnInit {
   }
 
   public childEvent(event) {
-
     switch (event.eventName) {
       case 'init':
         this.initChildEventReceived();
@@ -101,7 +98,6 @@ export class GamePage implements OnInit {
       case 'wildcard':
         this.wildcardApplied();
     }
-
   }
 
   private answerReceived(correctAnswer: boolean) {
@@ -177,12 +173,13 @@ export class GamePage implements OnInit {
     }
     const modal = await this.modalController.create({
       component: InvitePlayAgainComponent,
-      backdropDismiss: true,
+      backdropDismiss: false,
       keyboardClose: false,
       mode: 'ios',
       componentProps: { matchInfo: userMatchInfo }
     });
-    await modal.present();
+    modal.present();
+    await modal.onDidDismiss();
     this.startNewGame();
   }
 
