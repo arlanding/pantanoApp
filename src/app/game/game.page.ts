@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { GameService } from './services/game.service';
-import { Subject } from 'rxjs';
+import { Subject, noop } from 'rxjs';
 import { AlertController, ModalController } from '@ionic/angular';
 import { WelcomeComponent } from './components/welcome/welcome.component';
 import { SessionService } from '../shared/services/session.service';
@@ -23,6 +23,7 @@ export class GamePage implements OnInit {
     win: false,
     wildcardApplied: false,
     gameQuestions: [],
+    userAnswers: [],
     qtyOfQuestions: 10,
     childsInitialized: 0,
     questionNumber: 1,
@@ -61,6 +62,8 @@ export class GamePage implements OnInit {
       await modal.present();
       const { data } = await modal.onDidDismiss();
       this.config.userData.nickname = data.nickname;
+      this.config.userData.email = data.email;
+      this.config.userData.instagram = data.instagram;
       this.sessionService.setUserInfo(this.config);
       this.startNewGame();
     } else {
@@ -83,6 +86,7 @@ export class GamePage implements OnInit {
     this.config.wildcardApplied = false;
     this.config.questionNumber = 1;
     this.config.gameQuestions = newGameQuestions;
+    this.config.userAnswers = [];
     this.config.errorsCommitted = 0;
     this.config.start = true;
   }
@@ -93,15 +97,16 @@ export class GamePage implements OnInit {
         this.initChildEventReceived();
         break;
       case 'answer':
-        this.answerReceived(event.correctAnswer);
+        this.answerReceived(event.correctAnswer, event.answer);
         break;
       case 'wildcard':
         this.wildcardApplied();
     }
   }
 
-  private answerReceived(correctAnswer: boolean) {
+  private answerReceived(correctAnswer: boolean, userAnswer) {
     if (this.config.gameOver || this.config.win) { return false; }
+    this.config.userAnswers.push(userAnswer);
     correctAnswer ? this.correctAnswerCommited() : this.newErrorCommited();
   }
 
@@ -154,8 +159,7 @@ export class GamePage implements OnInit {
   }
 
   private endMatch() {
-    // TODO: Send user info to BE
-    this.gameService.postUserMatchData(this.config);
+    this.gameService.postUserMatchData(this.config).subscribe(noop);
     this.sessionService.setUserInfo(this.config);
     setTimeout(() => {
       this.config.start = false;

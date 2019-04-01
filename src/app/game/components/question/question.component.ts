@@ -13,7 +13,8 @@ export class QuestionComponent implements OnInit, OnDestroy {
 
   private $gameSubscription;
   private $animationSubscription;
-  private correctAnswerPosition: number;
+  private idQuest: number;
+  public correctAnswerPosition: number;
   public question: string = '';
   public answers = ['', '']
   public disabled = true;
@@ -35,7 +36,7 @@ export class QuestionComponent implements OnInit, OnDestroy {
     });
     this.$gameSubscription = this.game.subscribe(change => {
       if (change.event !== 'gameOver' && change.event !== 'wildcard' && change.event !== 'winGame') {
-        this.renderQuestion(change.gameQuestions[change.questionNumber - 1]);
+        this.renderQuestion(change.gameQuestions.questions[change.questionNumber - 1]);
       }
       if(change.lose || change.win){
         this.disabled = true;
@@ -44,28 +45,36 @@ export class QuestionComponent implements OnInit, OnDestroy {
     this.emit({ eventName: 'init' });
   }
 
-  public answerQuestion(userAnswer) {
+  public answerQuestion(userAnswer, position) {
     this.disabled = true;
-    const correctAnswerEmmiter = { eventName: 'answer', correctAnswer: true };
-    const incorrectAnswerEmmiter = { eventName: 'answer', correctAnswer: false };
+    const answeredQuestion = { number: this.idQuest, user_ans: this.answers[position] }
+    const correctAnswerEmmiter = { eventName: 'answer', correctAnswer: true, answer: answeredQuestion };
+    const incorrectAnswerEmmiter = { eventName: 'answer', correctAnswer: false, answer: answeredQuestion };
     // Check answer and emmit result
     userAnswer === this.questionConfig.correctAnswer ? this.emit(correctAnswerEmmiter) : this.emit(incorrectAnswerEmmiter);
   }
 
   private renderQuestion(question) {
+    this.idQuest = question.number;
     // Save correct answer in config
-    this.questionConfig.correctAnswer = question.ans;
+    this.questionConfig.correctAnswer = question.answer;
     // Assign received question for render
-    this.question = question.quest;
+    this.question = question.question;
+    // Get incorrect random answer
+    const incorrectAnswer = this.getRandomIncorrect(question.wrong_answers);
     // Get random answers positions
     let indexAnswers = [0, 1]
     indexAnswers = this.getRandomOrder(indexAnswers);
     this.correctAnswerPosition = indexAnswers[0];
     // Assign received answers for render
-    this.answers[indexAnswers[0]] = question.ans;
-    this.answers[indexAnswers[1]] = 'fail: ' + question.ans;
+    this.answers[indexAnswers[0]] = question.answer;
+    this.answers[indexAnswers[1]] = incorrectAnswer;
     // able buttons
     this.disabled = false;
+  }
+
+  private getRandomIncorrect(incArr): string{
+    return incArr[Math.floor(Math.random() * incArr.length)];
   }
 
   private wildcard(){
