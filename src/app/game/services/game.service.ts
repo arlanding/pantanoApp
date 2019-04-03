@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { of } from 'rxjs';
 import { GameConfig } from 'src/app/shared/interfaces/game-config';
 import { HttpClient } from '@angular/common/http';
 

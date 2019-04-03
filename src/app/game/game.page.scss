@@ -1,18 +1,13 @@
 :host {
     ion-content {
         main {
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
+            display: grid;
+            grid-template-rows: auto minmax(10px, 1fr) auto auto auto;
             height: 100%;
-            align-items: center;
-        }
-    }
 
-    ion-footer {
-        ion-toolbar {
-            min-height: 248px;
-            padding: 20px 0px;
+            ion-toolbar {
+                padding: 20px 0px;
+            }
         }
     }
 

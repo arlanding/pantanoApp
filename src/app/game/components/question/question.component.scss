@@ -1,7 +1,13 @@
 :host {
     h2 {
-        margin: 0px 7px 30px;
-        font-size: 20px;
-        text-align: justify;
+        margin: 0px 7px 15px;
+        font-size: 3.5vh;
+        text-align: center;
+    }
+
+    @media screen and (min-height: 550px) {
+        h2 {
+            font-size: 20px;
+        }
     }
 }
