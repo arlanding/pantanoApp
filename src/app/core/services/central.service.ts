@@ -10,6 +10,6 @@ export class CentralService {
   constructor(private http: HttpClient) { }
 
   public getQuestions(): Observable<any>{
-    return this.http.get('https://pantanoapp.com.ar/api/pantanoquestions/all');
+    return this.http.get('/api/pantanoquestions/all');
   }
 }
