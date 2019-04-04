@@ -43,7 +43,7 @@ export class TimerComponent implements OnInit, OnDestroy {
     this.interval = setInterval(() => {
       this.timePct = this.timePct - 0.01;
       if (this.timePct < 0) {
-        const incorrectAnswerEmmiter = { eventName: 'answer', correctAnswer: false };
+        const incorrectAnswerEmmiter = { eventName: 'answer', correctAnswer: false, answer: undefined };
         return this.emit(incorrectAnswerEmmiter)
       }
     }

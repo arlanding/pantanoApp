@@ -111,7 +111,7 @@ export class GamePage implements OnInit {
   }
 
   private correctAnswerCommited() {
-    if (this.config.questionNumber === this.config.gameQuestions.length) {
+    if (this.config.questionNumber === this.config.gameQuestions.questions.length) {
       return this.winCommited();
     }
     this.config.questionNumber++;
