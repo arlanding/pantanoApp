@@ -18,7 +18,6 @@ export class GamePage implements OnInit {
   private gameSubj: Subject<any> = new Subject();
   private animationSubj: Subject<any> = new Subject();
   private config: GameConfig = {
-    start: false,
     gameOver: false,
     win: false,
     wildcardApplied: false,
@@ -38,6 +37,7 @@ export class GamePage implements OnInit {
   }
   public game$ = this.gameSubj.asObservable();
   public animation$ = this.animationSubj.asObservable();
+  public start = false;
 
   constructor(
     private gameService: GameService,
@@ -88,7 +88,7 @@ export class GamePage implements OnInit {
     this.config.gameQuestions = newGameQuestions;
     this.config.userAnswers = [];
     this.config.errorsCommitted = 0;
-    this.config.start = true;
+    this.start = true;
   }
 
   public childEvent(event) {
@@ -111,7 +111,7 @@ export class GamePage implements OnInit {
   }
 
   private correctAnswerCommited() {
-    if (this.config.questionNumber === this.config.gameQuestions.length) {
+    if (this.config.questionNumber === this.config.gameQuestions.questions.length) {
       return this.winCommited();
     }
     this.config.questionNumber++;
@@ -162,7 +162,7 @@ export class GamePage implements OnInit {
     this.gameService.postUserMatchData(this.config).subscribe(noop);
     this.sessionService.setUserInfo(this.config);
     setTimeout(() => {
-      this.config.start = false;
+      this.start = false;
       this.invitePlayAgain();
     }, 3000)
   }
