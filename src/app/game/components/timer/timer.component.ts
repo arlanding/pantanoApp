@@ -14,24 +14,45 @@ export class TimerComponent implements OnInit, OnDestroy {
   private $gameSubscription;
   private $animationSubscription;
   private interval;
+  private pause = false;
   public timePct = 1.0;
 
   constructor() { }
 
   ngOnInit(): void {
-    this.$gameSubscription = this.game.subscribe(change => {
-      if (change.event !== 'gameOver' && change.event !== 'wildcard' && change.event !== 'winGame') {
-        if (this.interval) clearInterval(this.interval);
-        this.restartTimer()
-      }
-    });
     this.$animationSubscription = this.animation.subscribe(change => {
       switch (change.event) {
         case 'wildcard':
           this.resetTimePct();
           break;
+        case 'pauseGame':
+          this.pause = true;
+          if (this.interval) clearInterval(this.interval);
+          break;
         default:
           if (this.interval) clearInterval(this.interval);
+          break;
+      }
+    });
+    this.$gameSubscription = this.game.subscribe(change => {
+      switch (change.event) {
+        case 'wildcard':
+          break;
+        case 'pauseGame':
+          break;
+        case 'gameOver':
+          break;
+        case 'winGame':
+          break;
+        case 'continueGame': {
+          this.pause = false;
+          if (this.interval) clearInterval(this.interval);
+          if (!this.pause) { this.restartTimer() }
+          break;
+        }
+        default:
+          if (this.interval) clearInterval(this.interval);
+          if (!this.pause) { this.restartTimer() }
           break;
       }
     });

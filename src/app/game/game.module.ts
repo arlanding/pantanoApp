@@ -14,6 +14,7 @@ import { WildcardBarComponent } from './components/wildcard-bar/wildcard-bar.com
 import { TitleBarComponent } from './components/title-bar/title-bar.component';
 import { WelcomeComponent } from './components/welcome/welcome.component';
 import { InvitePlayAgainComponent } from './components/invite-play-again/invite-play-again.component';
+import { PopoverContentComponent } from '../shared/components/popover-content/popover-content.component';
 
 const routes: Routes = [
   {
@@ -42,7 +43,8 @@ const routes: Routes = [
   ],
   entryComponents:[
     WelcomeComponent,
-    InvitePlayAgainComponent
+    InvitePlayAgainComponent,
+    PopoverContentComponent
   ]
 })
 export class GamePageModule { }

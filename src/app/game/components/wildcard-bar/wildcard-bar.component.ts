@@ -1,11 +1,13 @@
-import { Component, OnInit, Input, OnDestroy, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, OnDestroy, Output, EventEmitter, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
 
 @Component({
   selector: 'pantano-wildcard-bar',
   templateUrl: './wildcard-bar.component.html',
   styleUrls: ['./wildcard-bar.component.scss'],
 })
-export class WildcardBarComponent implements OnInit, OnDestroy {
+export class WildcardBarComponent implements OnInit, OnDestroy, AfterViewInit {
+  @ViewChild('wildcard', { read: ElementRef }) wildcard: ElementRef;
+
   @Input() game;
   @Input() animation;
   @Output()
@@ -13,6 +15,7 @@ export class WildcardBarComponent implements OnInit, OnDestroy {
 
   private $gameSubscription;
   private $animationSubscription;
+  private tutorial = false;
   public errorsCommitted = 0;
   public disableWildcard = true;
   public questionNumber = 0;
@@ -21,13 +24,13 @@ export class WildcardBarComponent implements OnInit, OnDestroy {
 
   constructor() { }
 
+  ngAfterViewInit() {
+    this.tutorial = true;
+    this.disableWildcard = true;
+    this.wildcard.nativeElement.click();
+  }
+
   ngOnInit(): void {
-    this.$gameSubscription = this.game.subscribe(change => {
-      this.questionNumber = change.questionNumber;
-      if (!change.wildcardApplied && !change.gameOver && !change.win) {
-        this.disableWildcard = false;
-      }
-    });
     this.$animationSubscription = this.animation.subscribe(change => {
       this.disableWildcard = true;
       switch (change.event) {
@@ -46,11 +49,38 @@ export class WildcardBarComponent implements OnInit, OnDestroy {
           break;
       }
     });
+    this.$gameSubscription = this.game.subscribe(change => {
+      switch (change.event) {
+        case 'wildcard':
+          break;
+        case 'startGame':
+          break;
+        case 'wrongAnswer':
+          break;
+        case 'gameOver':
+          break;
+        case 'winGame':
+          break;
+        case 'pauseGame':
+          break;
+        default:
+          if (!change.wildcardApplied) {
+            this.disableWildcard = false;
+          }
+      }
+      this.questionNumber = change.questionNumber;
+    });
     this.emit({ eventName: 'init' });
   }
 
-  public applyWildcard() {
-    this.emit({ eventName: 'wildcard' });
+
+  public applyWildcard(event) {
+    if (this.tutorial) {
+      this.tutorial = false;
+      this.emit({ eventName: 'tutorial', $event: event, message: 'Este comodín te permitirá saber cuál es la respuesta correcta. ¡Solo tenes uno!', title: 'Comodín' });
+    } else {
+      this.emit({ eventName: 'wildcard' });
+    }
   }
 
   private emit(emition) {

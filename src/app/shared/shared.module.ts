@@ -3,9 +3,10 @@ import { CommonModule } from '@angular/common';
 import { HeaderComponent } from './components/header/header.component';
 import { IonicModule } from '@ionic/angular';
 import { FormatFilterPipe } from './pipes/format-filter.pipe';
+import { PopoverContentComponent } from './components/popover-content/popover-content.component';
 
 @NgModule({
-  declarations: [ HeaderComponent, FormatFilterPipe, ],
+  declarations: [ HeaderComponent, FormatFilterPipe, PopoverContentComponent],
   imports: [
     IonicModule,
     CommonModule
@@ -13,7 +14,8 @@ import { FormatFilterPipe } from './pipes/format-filter.pipe';
   exports: [
     CommonModule,
     HeaderComponent,
-    FormatFilterPipe
+    FormatFilterPipe,
+    PopoverContentComponent
   ]
 })
 export class SharedModule { }

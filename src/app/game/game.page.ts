@@ -1,11 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { GameService } from './services/game.service';
 import { Subject, noop } from 'rxjs';
-import { AlertController, ModalController } from '@ionic/angular';
+import { AlertController, ModalController, PopoverController } from '@ionic/angular';
 import { WelcomeComponent } from './components/welcome/welcome.component';
 import { SessionService } from '../shared/services/session.service';
 import { GameConfig } from '../shared/interfaces/game-config';
 import { InvitePlayAgainComponent } from './components/invite-play-again/invite-play-again.component';
+import { PopoverContentComponent } from '../shared/components/popover-content/popover-content.component';
 
 @Component({
   selector: 'app-game',
@@ -43,6 +44,7 @@ export class GamePage implements OnInit {
     private gameService: GameService,
     private modalController: ModalController,
     private sessionService: SessionService,
+    private popoverController: PopoverController,
     public alertController: AlertController
   ) { }
 
@@ -74,6 +76,29 @@ export class GamePage implements OnInit {
     }
   }
 
+  async showTutorial(event): Promise<any> {
+    if (this.sessionService.isFirstMatch()) {
+      this.nofityChangeInGame('pauseGame');
+      await this.presentPopover(event.message, event.$event, event.title);
+      this.nofityChangeInGame('continueGame');
+    }
+  }
+
+  async presentPopover(message, ev?: any, title: string = '',) {
+    const popover = await this.popoverController.create({
+      component: PopoverContentComponent,
+      event: ev,
+      translucent: false,
+      cssClass: 'custom-popover',
+      componentProps: {
+        title: title,
+        message: message
+      }
+    });
+    await popover.present();
+    return await popover.onDidDismiss();
+  }
+
   private startNewGame() {
     this.gameService.getGame(this.config.qtyOfQuestions).subscribe(newGameQuestions => {
       this.setNewGameProperties(newGameQuestions);
@@ -101,10 +126,15 @@ export class GamePage implements OnInit {
         break;
       case 'wildcard':
         this.wildcardApplied();
+        break;
+      case 'tutorial':
+        this.showTutorial(event);
+        break;
     }
   }
 
   private answerReceived(correctAnswer: boolean, userAnswer) {
+    this.nofityChangeInGame('tutorial');
     if (this.config.gameOver || this.config.win) { return false; }
     this.config.userAnswers.push(userAnswer);
     correctAnswer ? this.correctAnswerCommited() : this.newErrorCommited();
