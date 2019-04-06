@@ -1,6 +1,6 @@
 <ion-toolbar>
   <ion-buttons slot="secondary">
-    <ion-button (click)="applyWildcard()" id="wildcard" [disabled]="disableWildcard">
+    <ion-button (click)="applyWildcard($event)" id="wildcard" [disabled]="disableWildcard" #wildcard>
       <ion-icon slot="icon-only" name="gift"></ion-icon>
       <ion-badge color="danger">{{wildcardsRemaining}}</ion-badge>
     </ion-button>

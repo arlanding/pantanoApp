@@ -14,6 +14,7 @@ export class QuestionComponent implements OnInit, OnDestroy {
   private $gameSubscription;
   private $animationSubscription;
   private idQuest: number;
+  private pause = false;
   public correctAnswerPosition: number;
   public question: string = '';
   public answers = ['', '']
@@ -30,17 +31,43 @@ export class QuestionComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.$animationSubscription = this.animation.subscribe(change => {
-      if(change.event === 'wildcard'){
-        this.wildcard();
-      }
+      switch (change.event) {
+        case 'wildcard':
+          this.wildcard();
+          break;
+        case 'pauseGame':
+          this.pause = true;
+          break;
+        case 'continueGame': {
+          this.pause = false;
+          break;
+        }
+      };
     });
     this.$gameSubscription = this.game.subscribe(change => {
-      if (change.event !== 'gameOver' && change.event !== 'wildcard' && change.event !== 'winGame') {
-        this.renderQuestion(change.gameQuestions.questions[change.questionNumber - 1]);
-      }
-      if(change.lose || change.win){
-        this.disabled = true;
-      }
+      switch (change.event) {
+        case 'gameOver':
+          this.disabled = true;
+          break;
+        case 'winGame':
+          this.disabled = true;
+          break;
+        case 'wildcard':
+          break;
+        case 'pauseGame':
+          break;
+        case 'continueGame': {
+          this.pause = false;
+          if (!this.pause) {
+            this.renderQuestion(change.gameQuestions.questions[change.questionNumber - 1]);
+          }
+          break;
+        }
+        default:
+          if (!this.pause) {
+            this.renderQuestion(change.gameQuestions.questions[change.questionNumber - 1]);
+          }
+      };
     });
     this.emit({ eventName: 'init' });
   }
@@ -73,15 +100,15 @@ export class QuestionComponent implements OnInit, OnDestroy {
     this.disabled = false;
   }
 
-  private getRandomIncorrect(incArr): string{
+  private getRandomIncorrect(incArr): string {
     return incArr[Math.floor(Math.random() * incArr.length)];
   }
 
-  private wildcard(){
+  private wildcard() {
     this.wildcardApplied = true;
-    setTimeout(()=>{
+    setTimeout(() => {
       this.wildcardApplied = false;
-    },1000);
+    }, 1000);
 
   }
 

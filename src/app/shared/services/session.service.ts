@@ -18,6 +18,10 @@ export class SessionService {
     return this.newUser;
   }
 
+  public isFirstMatch(): boolean {
+    return (this.userInfo.matches.win + this.userInfo.matches.lose) < 1;
+  }
+
   public setUserInfo(config): void {
     this.newUser = false;
     this.userInfo.userData = config.userData;
