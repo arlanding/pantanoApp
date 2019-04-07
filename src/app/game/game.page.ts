@@ -35,6 +35,10 @@ export class GamePage implements OnInit {
       instagram: ''
     }
   }
+  private currentTutorials = [];
+  private tutorialsRuns = [];
+  private tutorialsRunning = false;
+  private pause = false;
   public game$ = this.gameSubj.asObservable();
   public animation$ = this.animationSubj.asObservable();
   public start = false;
@@ -77,37 +81,45 @@ export class GamePage implements OnInit {
 
   async showTutorial(event): Promise<any> {
     if (this.sessionService.isFirstMatch()) {
-      this.nofityChangeInGame('pauseGame');
+      this.tutorialsRunning = true;
+      this.pauseGame();
       await this.presentPopover(event.message, event.$event, event.title);
-      this.nofityChangeInGame('continueGame');
+      this.continueGame();
+      this.tutorialsRunning = false;
     }
   }
 
-  async showMultipleTutorial(event): Promise<any> {
+  async showMultipleTutorial(): Promise<any> {
     if (this.sessionService.isFirstMatch()) {
-      this.nofityChangeInGame('pauseGame');
-      for (const tuto of event.tutorials) {
-        await this.presentPopover(tuto.message, tuto.$event, tuto.title);
+      this.tutorialsRunning = true;
+      this.pauseGame();
+      for (const tuto of this.currentTutorials) {
+        if (!this.checkIfTutoWasRunned(tuto.title)){
+          this.tutorialsRuns.push(tuto.title);
+          await this.presentPopover(tuto.message, tuto.$event, tuto.title);
+        }
       }
-      this.nofityChangeInGame('continueGame');
+      this.continueGame();
+      this.tutorialsRunning = false;
     }
   }
 
-  async presentPopover(message, ev?: any, title: string = '', ) {
-    const popover = await this.popoverController.create({
-      component: PopoverContentComponent,
-      event: ev,
-      translucent: false,
-      cssClass: 'custom-popover',
-      backdropDismiss: false,
-      keyboardClose: false,
-      componentProps: {
-        title: title,
-        message: message
-      }
-    });
-    await popover.present();
-    return await popover.onDidDismiss();
+  private checkIfTutoWasRunned(name) {
+    return this.tutorialsRuns.indexOf(name) > -1;
+  }
+
+  private pauseGame() {
+    if (!this.pause) {
+      this.nofityChangeInGame('pauseGame');
+      this.pause = true;
+    }
+  }
+
+  private continueGame() {
+    if (this.pause) {
+      this.nofityChangeInGame('continueGame');
+      this.pause = false;
+    }
   }
 
   private startNewGame() {
@@ -125,6 +137,7 @@ export class GamePage implements OnInit {
     this.config.gameQuestions = newGameQuestions;
     this.config.userAnswers = [];
     this.start = true;
+    this.currentTutorials = [];
   }
 
   public childEvent(event) {
@@ -139,10 +152,11 @@ export class GamePage implements OnInit {
         this.wildcardApplied();
         break;
       case 'tutorial':
-        this.showTutorial(event);
+        if (!this.tutorialsRunning) { this.showTutorial(event); }
         break;
       case 'multipleTutorial':
-        this.showMultipleTutorial(event);
+        this.currentTutorials = [...this.currentTutorials, ...event.tutorials];
+        if (this.currentTutorials.length > 2) { this.showMultipleTutorial(); }
         break;
     }
   }
@@ -255,6 +269,23 @@ export class GamePage implements OnInit {
     });
 
     await alert.present();
+  }
+
+  private async presentPopover(message, ev?: any, title: string = '', ) {
+    const popover = await this.popoverController.create({
+      component: PopoverContentComponent,
+      event: ev,
+      translucent: false,
+      cssClass: 'custom-popover',
+      backdropDismiss: false,
+      keyboardClose: false,
+      componentProps: {
+        title: title,
+        message: message
+      }
+    });
+    await popover.present();
+    return await popover.onDidDismiss();
   }
 
 }
