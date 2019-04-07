@@ -27,8 +27,7 @@ export class GamePage implements OnInit {
     qtyOfQuestions: 10,
     childsInitialized: 0,
     questionNumber: 1,
-    errorsCommitted: 0,
-    errorsAllowed: 2,
+    lifes: 2,
     matches: { win: 0, lose: 0 },
     userData: {
       nickname: '',
@@ -122,9 +121,9 @@ export class GamePage implements OnInit {
     this.config.win = false;
     this.config.wildcardApplied = false;
     this.config.questionNumber = 1;
+    this.config.lifes = 2;
     this.config.gameQuestions = newGameQuestions;
     this.config.userAnswers = [];
-    this.config.errorsCommitted = 0;
     this.start = true;
   }
 
@@ -164,8 +163,8 @@ export class GamePage implements OnInit {
   }
 
   private newErrorCommited() {
-    this.config.errorsCommitted++;
-    if (this.config.errorsCommitted === this.config.errorsAllowed) {
+    this.config.lifes--;
+    if (this.config.lifes === 0) {
       return this.loseCommited();
     } else {
       this.config.questionNumber++;

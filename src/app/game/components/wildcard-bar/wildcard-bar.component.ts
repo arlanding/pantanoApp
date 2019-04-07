@@ -18,7 +18,7 @@ export class WildcardBarComponent implements OnInit, OnDestroy, AfterViewInit {
   private $animationSubscription;
   private wildcardTutorial = false;
   private errorsTutorial = false;
-  public errorsCommitted = 0;
+  public lifes = 2;
   public disableWildcard = true;
   public questionNumber = 0;
   public wildcardsRemaining = 1;
@@ -46,18 +46,16 @@ export class WildcardBarComponent implements OnInit, OnDestroy, AfterViewInit {
           this.numberOfQuestions = change.qtyOfQuestions;
           break;
         case 'wrongAnswer':
-          this.errorsCommitted = change.errorsCommitted;
+          this.lifes = change.lifes;
           break;
         case 'gameOver':
-          this.errorsCommitted = change.errorsCommitted;
+          this.lifes = change.lifes;
           break;
       }
     });
     this.$gameSubscription = this.game.subscribe(change => {
       switch (change.event) {
         case 'wildcard':
-          break;
-        case 'startGame':
           break;
         case 'wrongAnswer':
           break;
@@ -80,7 +78,7 @@ export class WildcardBarComponent implements OnInit, OnDestroy, AfterViewInit {
   public applyWildcard(event) {
     if (!this.wildcardTutorial) {
       this.wildcardTutorial = true;
-      this.emitTutorials({$event: event, message: 'Este comodín te permitirá saber cuál es la respuesta correcta. ¡Solo tenes uno!', title: 'Comodín' });
+      this.emitTutorials({$event: event, message: 'Este comodín te permitirá saber cuál es la respuesta correcta ¡Solo tenes uno!', title: 'Comodín' });
     } else {
       this.emit({ eventName: 'wildcard' });
     }
