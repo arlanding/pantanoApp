@@ -48,12 +48,14 @@
       </ion-card-content>
     </ion-card>
 
-    <ion-button color="primary" margin-top (click)="playAgain()">
-      Jugar de nuevo
-    </ion-button>
-    <ion-button color="dark" margin-top (click)="backHome()">
-      Volver al home
-    </ion-button>
+    <div class="buttons">
+      <ion-button color="primary" fill="solid" expand="block" margin-top (click)="playAgain()">
+        Jugar de nuevo
+      </ion-button>
+      <ion-button color="dark" fill="outline" expand="block" margin-top (click)="backHome()">
+        Volver
+      </ion-button>
+    </div>
 
   </section>
 </ion-content>

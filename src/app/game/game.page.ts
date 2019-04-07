@@ -284,6 +284,7 @@ export class GamePage implements OnInit {
       cssClass: 'custom-popover',
       backdropDismiss: false,
       keyboardClose: false,
+      mode: 'ios',
       componentProps: {
         title: title,
         message: message
