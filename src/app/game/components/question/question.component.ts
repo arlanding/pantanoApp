@@ -14,7 +14,7 @@ export class QuestionComponent implements OnInit, OnDestroy {
   private $gameSubscription;
   private $animationSubscription;
   private idQuest: number;
-  private pause = false;
+  public pause = false;
   public correctAnswerPosition: number;
   public question: string = '';
   public answers = ['', '']
@@ -37,6 +37,8 @@ export class QuestionComponent implements OnInit, OnDestroy {
           break;
         case 'pauseGame':
           this.pause = true;
+          this.question = '';
+          this.answers = ['',''];
           break;
         case 'continueGame': {
           this.pause = false;

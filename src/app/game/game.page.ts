@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { GameService } from './services/game.service';
 import { Subject, noop } from 'rxjs';
-import { AlertController, ModalController, PopoverController } from '@ionic/angular';
+import { AlertController, ModalController, PopoverController, NavController } from '@ionic/angular';
 import { WelcomeComponent } from './components/welcome/welcome.component';
 import { SessionService } from '../shared/services/session.service';
 import { GameConfig } from '../shared/interfaces/game-config';
@@ -27,8 +27,7 @@ export class GamePage implements OnInit {
     qtyOfQuestions: 10,
     childsInitialized: 0,
     questionNumber: 1,
-    errorsCommitted: 0,
-    errorsAllowed: 2,
+    lifes: 2,
     matches: { win: 0, lose: 0 },
     userData: {
       nickname: '',
@@ -36,6 +35,10 @@ export class GamePage implements OnInit {
       instagram: ''
     }
   }
+  private currentTutorials = [];
+  private tutorialsRuns = [];
+  private tutorialsRunning = false;
+  private pause = false;
   public game$ = this.gameSubj.asObservable();
   public animation$ = this.animationSubj.asObservable();
   public start = false;
@@ -45,6 +48,7 @@ export class GamePage implements OnInit {
     private modalController: ModalController,
     private sessionService: SessionService,
     private popoverController: PopoverController,
+    private navCtrl: NavController,
     public alertController: AlertController
   ) { }
 
@@ -78,25 +82,45 @@ export class GamePage implements OnInit {
 
   async showTutorial(event): Promise<any> {
     if (this.sessionService.isFirstMatch()) {
-      this.nofityChangeInGame('pauseGame');
+      this.tutorialsRunning = true;
+      this.pauseGame();
       await this.presentPopover(event.message, event.$event, event.title);
-      this.nofityChangeInGame('continueGame');
+      this.continueGame();
+      this.tutorialsRunning = false;
     }
   }
 
-  async presentPopover(message, ev?: any, title: string = '',) {
-    const popover = await this.popoverController.create({
-      component: PopoverContentComponent,
-      event: ev,
-      translucent: false,
-      cssClass: 'custom-popover',
-      componentProps: {
-        title: title,
-        message: message
+  async showMultipleTutorial(): Promise<any> {
+    if (this.sessionService.isFirstMatch()) {
+      this.tutorialsRunning = true;
+      this.pauseGame();
+      for (const tuto of this.currentTutorials) {
+        if (!this.checkIfTutoWasRunned(tuto.title)) {
+          this.tutorialsRuns.push(tuto.title);
+          await this.presentPopover(tuto.message, tuto.$event, tuto.title);
+        }
       }
-    });
-    await popover.present();
-    return await popover.onDidDismiss();
+      this.continueGame();
+      this.tutorialsRunning = false;
+    }
+  }
+
+  private checkIfTutoWasRunned(name) {
+    return this.tutorialsRuns.indexOf(name) > -1;
+  }
+
+  private pauseGame() {
+    if (!this.pause) {
+      this.nofityChangeInGame('pauseGame');
+      this.pause = true;
+    }
+  }
+
+  private continueGame() {
+    if (this.pause) {
+      this.nofityChangeInGame('continueGame');
+      this.pause = false;
+    }
   }
 
   private startNewGame() {
@@ -110,10 +134,11 @@ export class GamePage implements OnInit {
     this.config.win = false;
     this.config.wildcardApplied = false;
     this.config.questionNumber = 1;
+    this.config.lifes = 2;
     this.config.gameQuestions = newGameQuestions;
     this.config.userAnswers = [];
-    this.config.errorsCommitted = 0;
     this.start = true;
+    this.currentTutorials = [];
   }
 
   public childEvent(event) {
@@ -128,7 +153,11 @@ export class GamePage implements OnInit {
         this.wildcardApplied();
         break;
       case 'tutorial':
-        this.showTutorial(event);
+        if (!this.tutorialsRunning) { this.showTutorial(event); }
+        break;
+      case 'multipleTutorial':
+        this.currentTutorials = [...this.currentTutorials, ...event.tutorials];
+        if (this.currentTutorials.length > 2) { this.showMultipleTutorial(); }
         break;
     }
   }
@@ -149,8 +178,8 @@ export class GamePage implements OnInit {
   }
 
   private newErrorCommited() {
-    this.config.errorsCommitted++;
-    if (this.config.errorsCommitted === this.config.errorsAllowed) {
+    this.config.lifes--;
+    if (this.config.lifes === 0) {
       return this.loseCommited();
     } else {
       this.config.questionNumber++;
@@ -213,8 +242,12 @@ export class GamePage implements OnInit {
       componentProps: { matchInfo: userMatchInfo }
     });
     modal.present();
-    await modal.onDidDismiss();
-    this.startNewGame();
+    const answer = await modal.onDidDismiss();
+    if (answer.data) {
+      this.startNewGame();
+    } else {
+      this.navCtrl.navigateRoot('/home');
+    }
   }
 
   private initChildEventReceived() {
@@ -241,6 +274,23 @@ export class GamePage implements OnInit {
     });
 
     await alert.present();
+  }
+
+  private async presentPopover(message, ev?: any, title: string = '', ) {
+    const popover = await this.popoverController.create({
+      component: PopoverContentComponent,
+      event: ev,
+      translucent: false,
+      cssClass: 'custom-popover',
+      backdropDismiss: false,
+      keyboardClose: false,
+      componentProps: {
+        title: title,
+        message: message
+      }
+    });
+    await popover.present();
+    return await popover.onDidDismiss();
   }
 
 }

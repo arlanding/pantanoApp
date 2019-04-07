@@ -9,8 +9,7 @@ export interface GameConfig {
     qtyOfQuestions: number,
     childsInitialized: number,
     questionNumber: number,
-    errorsCommitted: number,
-    errorsAllowed: number,
+    lifes: number,
     matches: { win: number, lose: number },
     userData: UserData
 }

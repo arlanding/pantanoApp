@@ -1,6 +1,6 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title>Pantano App 🌾</ion-title>
+    <ion-title (click)="backHome()">Pantano App 🌾</ion-title>
   </ion-toolbar>
 </ion-header>
 
@@ -50,6 +50,9 @@
 
     <ion-button color="primary" margin-top (click)="playAgain()">
       Jugar de nuevo
+    </ion-button>
+    <ion-button color="dark" margin-top (click)="backHome()">
+      Volver al home
     </ion-button>
 
   </section>

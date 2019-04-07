@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, OnDestroy, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, OnDestroy, Output, EventEmitter, ViewChild, ElementRef } from '@angular/core';
 
 @Component({
   selector: 'pantano-timer',
@@ -6,6 +6,7 @@ import { Component, OnInit, Input, OnDestroy, Output, EventEmitter } from '@angu
   styleUrls: ['./timer.component.scss'],
 })
 export class TimerComponent implements OnInit, OnDestroy {
+  @ViewChild('timer', { read: ElementRef }) timer: ElementRef;
   @Input() game;
   @Input() animation;
   @Output()
@@ -15,7 +16,12 @@ export class TimerComponent implements OnInit, OnDestroy {
   private $animationSubscription;
   private interval;
   private pause = false;
+  private timerTutorial = false;
   public timePct = 1.0;
+
+  ngAfterViewInit() {
+    this.timer.nativeElement.click();
+  }
 
   constructor() { }
 
@@ -57,6 +63,14 @@ export class TimerComponent implements OnInit, OnDestroy {
       }
     });
     this.emit({ eventName: 'init' });
+  }
+
+
+  public timerTutorialFn(event) {
+    if (!this.timerTutorial) {
+      this.timerTutorial = true;
+      this.emit({ eventName: 'multipleTutorial', tutorials: [{ $event: event, message: 'Tenes 10 segundos para cada pregunta', title: 'Tiempo' }] });
+    }
   }
 
   private restartTimer() {

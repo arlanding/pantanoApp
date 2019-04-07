@@ -7,6 +7,7 @@ import { Component, OnInit, Input, OnDestroy, Output, EventEmitter, ViewChild, E
 })
 export class WildcardBarComponent implements OnInit, OnDestroy, AfterViewInit {
   @ViewChild('wildcard', { read: ElementRef }) wildcard: ElementRef;
+  @ViewChild('errors', { read: ElementRef }) errors: ElementRef;
 
   @Input() game;
   @Input() animation;
@@ -15,18 +16,21 @@ export class WildcardBarComponent implements OnInit, OnDestroy, AfterViewInit {
 
   private $gameSubscription;
   private $animationSubscription;
-  private tutorial = false;
-  public errorsCommitted = 0;
+  private wildcardTutorial = false;
+  private errorsTutorial = false;
+  public lifes = 2;
   public disableWildcard = true;
   public questionNumber = 0;
   public wildcardsRemaining = 1;
   public numberOfQuestions = 10;
 
+  tutorials = [];
+
   constructor() { }
 
   ngAfterViewInit() {
-    this.tutorial = true;
     this.disableWildcard = true;
+    this.errors.nativeElement.click();
     this.wildcard.nativeElement.click();
   }
 
@@ -42,18 +46,16 @@ export class WildcardBarComponent implements OnInit, OnDestroy, AfterViewInit {
           this.numberOfQuestions = change.qtyOfQuestions;
           break;
         case 'wrongAnswer':
-          this.errorsCommitted = change.errorsCommitted;
+          this.lifes = change.lifes;
           break;
         case 'gameOver':
-          this.errorsCommitted = change.errorsCommitted;
+          this.lifes = change.lifes;
           break;
       }
     });
     this.$gameSubscription = this.game.subscribe(change => {
       switch (change.event) {
         case 'wildcard':
-          break;
-        case 'startGame':
           break;
         case 'wrongAnswer':
           break;
@@ -73,13 +75,26 @@ export class WildcardBarComponent implements OnInit, OnDestroy, AfterViewInit {
     this.emit({ eventName: 'init' });
   }
 
-
   public applyWildcard(event) {
-    if (this.tutorial) {
-      this.tutorial = false;
-      this.emit({ eventName: 'tutorial', $event: event, message: 'Este comodín te permitirá saber cuál es la respuesta correcta. ¡Solo tenes uno!', title: 'Comodín' });
+    if (!this.wildcardTutorial) {
+      this.wildcardTutorial = true;
+      this.emitTutorials({$event: event, message: 'Este comodín te permitirá saber cuál es la respuesta correcta ¡Solo tenes uno!', title: 'Comodín' });
     } else {
       this.emit({ eventName: 'wildcard' });
+    }
+  }
+
+  private emitTutorials(tutorial){
+    this.tutorials.push(tutorial)
+    if(this.tutorials.length === 2){
+      this.emit({ eventName: 'multipleTutorial', tutorials: this.tutorials });
+    }
+  }
+
+  public errorsTutorialFn(event){
+    if (!this.errorsTutorial) {
+      this.errorsTutorial = true;
+      this.emitTutorials({$event: event, message: 'Solo tenes dos vidas, cuidalas bien', title: 'Vidas' });
     }
   }
 
