@@ -5,6 +5,75 @@
         text-align: center;
     }
 
+    ion-button.clickeabled {
+        border-radius: 10px;
+        background: #366B38 !important;
+        -webkit-animation: glowing 1500ms infinite;
+        -moz-animation: glowing 1500ms infinite;
+        -o-animation: glowing 1500ms infinite;
+        animation: glowing 1500ms infinite;
+    }
+
+    @-webkit-keyframes glowing {
+        0% {
+            -webkit-box-shadow: 0 0 3px #E87F30;
+        }
+
+        50% {
+            background-color: #366B38;
+            -webkit-box-shadow: 0 0 40px #366B38;
+        }
+
+        100% {
+            -webkit-box-shadow: 0 0 3px #E87F30;
+        }
+    }
+
+    @-moz-keyframes glowing {
+        0% {
+            -moz-box-shadow: 0 0 3px #E87F30;
+        }
+
+        50% {
+            background-color: #366B38;
+            -moz-box-shadow: 0 0 40px #366B38;
+        }
+
+        100% {
+            -moz-box-shadow: 0 0 3px #E87F30;
+        }
+    }
+
+    @-o-keyframes glowing {
+        0% {
+            box-shadow: 0 0 3px #E87F30;
+        }
+
+        50% {
+            background-color: #366B38;
+            box-shadow: 0 0 40px #366B38;
+        }
+
+        100% {
+            box-shadow: 0 0 3px #E87F30;
+        }
+    }
+
+    @keyframes glowing {
+        0% {
+            box-shadow: 0 0 3px #E87F30;
+        }
+
+        50% {
+            background-color: #366B38;
+            box-shadow: 0 0 40px #366B38;
+        }
+
+        100% {
+            box-shadow: 0 0 3px #E87F30;
+        }
+    }
+
     @media screen and (min-height: 550px) {
         h2 {
             font-size: 20px;
