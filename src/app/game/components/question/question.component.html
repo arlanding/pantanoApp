@@ -1,9 +1,13 @@
 <h2>{{question}}</h2>
-<ion-button [color]="position0" [ngClass]="{clickeabled: wildcardApplied && correctAnswerPosition === 0}" (click)="answerQuestion(answers[0], 0)"
-    [disabled]="disabled || pause" expand="block">
+<ion-button [color]="buttonsColors[0]" [ngClass]="{clickeabled: wildcardApplied && correctAnswerPosition === 0}"
+    (click)="answerQuestion(answers[0], 0)" [disabled]="disabled || pause" expand="block">
+    <ion-text *ngIf="wildcardApplied && correctAnswerPosition === 0">🤫👉🏻👉🏻👉🏻&nbsp;</ion-text>
     {{answers[0]}}
+    <ion-text *ngIf="wildcardApplied && correctAnswerPosition === 0">&nbsp;👈🏻👈🏻👈🏻🤫</ion-text>
 </ion-button>
-<ion-button [color]="position1" [ngClass]="{clickeabled: wildcardApplied && correctAnswerPosition === 1}" (click)="answerQuestion(answers[1], 1)"
-    [disabled]="disabled || pause" expand="block">
+<ion-button [color]="buttonsColors[1]" [ngClass]="{clickeabled: wildcardApplied && correctAnswerPosition === 1}"
+    (click)="answerQuestion(answers[1], 1)" [disabled]="disabled || pause" expand="block">
+    <ion-text *ngIf="wildcardApplied && correctAnswerPosition === 1">🤫👉🏻👉🏻👉🏻&nbsp;</ion-text>
     {{answers[1]}}
+    <ion-text *ngIf="wildcardApplied && correctAnswerPosition === 1">&nbsp;👈🏻👈🏻👈🏻🤫</ion-text>
 </ion-button>

@@ -1,5 +1,11 @@
 import { Component, OnInit, Input, OnDestroy, Output, EventEmitter } from '@angular/core';
 
+export enum colorsEnum {
+  default = 'primary',
+  correct = 'success',
+  error = 'danger'
+}
+
 @Component({
   selector: 'pantano-question',
   templateUrl: './question.component.html',
@@ -20,8 +26,7 @@ export class QuestionComponent implements OnInit, OnDestroy {
   public answers = ['', '']
   public disabled = true;
   public wildcardApplied = false;
-  public position0 = 'primary';
-  public position1 = 'primary';
+  public buttonsColors = ['primary', 'primary'];
 
   private questionConfig = {
     correctAnswer: ''
@@ -40,7 +45,7 @@ export class QuestionComponent implements OnInit, OnDestroy {
         case 'pauseGame':
           this.pause = true;
           this.question = '';
-          this.answers = ['',''];
+          this.answers = ['', ''];
           break;
         case 'continueGame': {
           this.pause = false;
@@ -63,17 +68,24 @@ export class QuestionComponent implements OnInit, OnDestroy {
         case 'continueGame': {
           this.pause = false;
           if (!this.pause) {
+            this.setDefaultColors();
             this.renderQuestion(change.gameQuestions.questions[change.questionNumber - 1]);
           }
           break;
         }
         default:
           if (!this.pause) {
+            this.setDefaultColors();
             this.renderQuestion(change.gameQuestions.questions[change.questionNumber - 1]);
           }
       };
     });
     this.emit({ eventName: 'init' });
+  }
+
+  private setDefaultColors() {
+    this.buttonsColors[0] = colorsEnum.default;
+    this.buttonsColors[1] = colorsEnum.default;
   }
 
   public answerQuestion(userAnswer, position) {
@@ -83,7 +95,15 @@ export class QuestionComponent implements OnInit, OnDestroy {
     const correctAnswerEmmiter = { eventName: 'answer', correctAnswer: true, answer: answeredQuestion };
     const incorrectAnswerEmmiter = { eventName: 'answer', correctAnswer: false, answer: answeredQuestion };
     // Check answer and emmit result
-    userAnswer === this.questionConfig.correctAnswer ? this.emit(correctAnswerEmmiter) : this.emit(incorrectAnswerEmmiter);
+    const correctAnswer = userAnswer === this.questionConfig.correctAnswer;
+
+    if (correctAnswer) {
+      this.buttonsColors[position] = colorsEnum.correct;
+      this.emit(correctAnswerEmmiter);
+    }else{
+      this.buttonsColors[position] = colorsEnum.error;
+      this.emit(incorrectAnswerEmmiter);
+    } 
   }
 
   private renderQuestion(question) {
