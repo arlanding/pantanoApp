@@ -6,7 +6,7 @@
           <ion-title>Menu</ion-title>
         </ion-toolbar>
       </ion-header>
-      <ion-content>
+      <ion-content id="side-menu">
         <ion-list>
           <ion-menu-toggle auto-hide="false" *ngFor="let p of appPages">
             <ion-item [routerDirection]="'root'" [routerLink]="[p.url]">
@@ -16,6 +16,18 @@
               </ion-label>
             </ion-item>
           </ion-menu-toggle>
+          <ion-item href="https://instagram.com/pantanoapp" target="_blank">
+            <ion-icon slot="start" name="logo-instagram"></ion-icon>
+            <ion-label>
+              Instagram @pantanoapp
+            </ion-label>
+          </ion-item>
+          <ion-item color="dark" *ngIf="showCookieMessage" (click)="acceptCookies()">
+            <ion-icon slot="end" name="close-circle"></ion-icon>
+            <ion-label>
+                Esta web utiliza Cookies
+            </ion-label>
+          </ion-item>
         </ion-list>
       </ion-content>
     </ion-menu>

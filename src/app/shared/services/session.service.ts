@@ -17,7 +17,7 @@ export class SessionService {
 
   public isNewUser(): boolean {
     const cookieExists: boolean = this.cookieService.check('pantano-userData');
-    if(this.newUser && cookieExists){
+    if (this.newUser && cookieExists) {
       this.userInfo = this.getUserInfoCookies();
       this.newUser = false;
     }
@@ -33,15 +33,23 @@ export class SessionService {
     this.userInfo.userData = config.userData;
     this.userInfo.matches.win = config.matches.win;
     this.userInfo.matches.lose = config.matches.lose;
-    this.cookieService.set('pantano-userData', JSON.stringify(config.userData));
-    this.cookieService.set('pantano-matches', JSON.stringify(config.matches));
+    this.setCookie('pantano-userData', JSON.stringify(config.userData));
+    this.setCookie('pantano-matches', JSON.stringify(config.matches));
   }
 
   public getUserInfo(): UserInfo {
     return this.userInfo;
   }
 
-  private getUserInfoCookies(): UserInfo{
+  public checkCookie(cookieName): boolean {
+    return this.cookieService.check(cookieName);
+  }
+
+  public setCookie(cookieName:string, data: string):void {
+    this.cookieService.set(cookieName, data);
+  }
+
+  private getUserInfoCookies(): UserInfo {
     const cookieUserData = JSON.parse(this.cookieService.get('pantano-userData'));
     const cookieMatches = JSON.parse(this.cookieService.get('pantano-matches'));
     const userDataFromCookies = {
@@ -50,5 +58,6 @@ export class SessionService {
     };
     return userDataFromCookies;
   }
+
 
 }
