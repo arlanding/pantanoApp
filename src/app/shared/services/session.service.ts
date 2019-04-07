@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { UserInfo } from '../interfaces/user-info';
+import { CookieService } from 'ngx-cookie-service';
 
 @Injectable({
   providedIn: 'root'
@@ -12,9 +13,14 @@ export class SessionService {
     matches: { win: 0, lose: 0 }
   };
 
-  constructor() { }
+  constructor(private cookieService: CookieService) { }
 
   public isNewUser(): boolean {
+    const cookieExists: boolean = this.cookieService.check('pantano-userData');
+    if (this.newUser && cookieExists) {
+      this.userInfo = this.getUserInfoCookies();
+      this.newUser = false;
+    }
     return this.newUser;
   }
 
@@ -27,10 +33,31 @@ export class SessionService {
     this.userInfo.userData = config.userData;
     this.userInfo.matches.win = config.matches.win;
     this.userInfo.matches.lose = config.matches.lose;
+    this.setCookie('pantano-userData', JSON.stringify(config.userData));
+    this.setCookie('pantano-matches', JSON.stringify(config.matches));
   }
 
   public getUserInfo(): UserInfo {
     return this.userInfo;
   }
+
+  public checkCookie(cookieName): boolean {
+    return this.cookieService.check(cookieName);
+  }
+
+  public setCookie(cookieName:string, data: string):void {
+    this.cookieService.set(cookieName, data);
+  }
+
+  private getUserInfoCookies(): UserInfo {
+    const cookieUserData = JSON.parse(this.cookieService.get('pantano-userData'));
+    const cookieMatches = JSON.parse(this.cookieService.get('pantano-matches'));
+    const userDataFromCookies = {
+      userData: cookieUserData,
+      matches: cookieMatches
+    };
+    return userDataFromCookies;
+  }
+
 
 }
