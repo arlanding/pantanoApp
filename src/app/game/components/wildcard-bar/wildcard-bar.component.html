@@ -7,7 +7,7 @@
   </ion-buttons>
   <ion-title color="dark">Pregunta <strong>{{questionNumber}} de {{numberOfQuestions}}</strong></ion-title>
   <ion-buttons slot="primary">
-    <ion-button color="secondary">
+    <ion-button color="secondary" (click)="errorsTutorialFn($event)" #errors>
       Error&nbsp; <strong>{{errorsCommitted}} de 2</strong>
     </ion-button>
   </ion-buttons>

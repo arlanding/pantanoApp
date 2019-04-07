@@ -84,12 +84,24 @@ export class GamePage implements OnInit {
     }
   }
 
-  async presentPopover(message, ev?: any, title: string = '',) {
+  async showMultipleTutorial(event): Promise<any> {
+    if (this.sessionService.isFirstMatch()) {
+      this.nofityChangeInGame('pauseGame');
+      for (const tuto of event.tutorials) {
+        await this.presentPopover(tuto.message, tuto.$event, tuto.title);
+      }
+      this.nofityChangeInGame('continueGame');
+    }
+  }
+
+  async presentPopover(message, ev?: any, title: string = '', ) {
     const popover = await this.popoverController.create({
       component: PopoverContentComponent,
       event: ev,
       translucent: false,
       cssClass: 'custom-popover',
+      backdropDismiss: false,
+      keyboardClose: false,
       componentProps: {
         title: title,
         message: message
@@ -129,6 +141,9 @@ export class GamePage implements OnInit {
         break;
       case 'tutorial':
         this.showTutorial(event);
+        break;
+      case 'multipleTutorial':
+        this.showMultipleTutorial(event);
         break;
     }
   }
