@@ -20,6 +20,14 @@
             }
         }
 
+        section>.buttons {
+            flex-grow: 0;
+            display: flex;
+            flex-direction: row;
+            align-items: flex-start;
+            justify-content: space-evenly;
+        }
+
         section>* {
             flex-grow: 0;
             display: flex;
