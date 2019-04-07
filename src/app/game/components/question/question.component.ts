@@ -20,6 +20,8 @@ export class QuestionComponent implements OnInit, OnDestroy {
   public answers = ['', '']
   public disabled = true;
   public wildcardApplied = false;
+  public position0 = 'primary';
+  public position1 = 'primary';
 
   private questionConfig = {
     correctAnswer: ''
@@ -76,6 +78,7 @@ export class QuestionComponent implements OnInit, OnDestroy {
 
   public answerQuestion(userAnswer, position) {
     this.disabled = true;
+    // this.position0 = 'success';
     const answeredQuestion = { number: this.idQuest, user_ans: this.answers[position] }
     const correctAnswerEmmiter = { eventName: 'answer', correctAnswer: true, answer: answeredQuestion };
     const incorrectAnswerEmmiter = { eventName: 'answer', correctAnswer: false, answer: answeredQuestion };
@@ -110,7 +113,7 @@ export class QuestionComponent implements OnInit, OnDestroy {
     this.wildcardApplied = true;
     setTimeout(() => {
       this.wildcardApplied = false;
-    }, 1000);
+    }, 4000);
 
   }
 

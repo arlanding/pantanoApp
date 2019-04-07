@@ -26,6 +26,6 @@ export class GameService {
       "questions": matchData.userAnswers,
       "gameResult": gameResult
     }
-    return this.http.post('https://pantanoapp.com.ar/api/gameresult', params);
+    return this.http.post('https://pantanoapp.com.ar/api/pantanogame/gameresult', params);
   }
 }
