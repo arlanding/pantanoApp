@@ -22,9 +22,14 @@ export class AppComponent {
       icon: 'planet'
     },
     {
-      title: 'Practicar',
+      title: 'Practicar preguntas',
       url: '/practicar',
       icon: 'list'
+    },
+    {
+      title: 'Proximamente',
+      url: '/proximamente',
+      icon: 'star-outline'
     }
   ];
   public showCookieMessage = true;
