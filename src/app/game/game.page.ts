@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { GameService } from './services/game.service';
 import { Subject, noop } from 'rxjs';
-import { AlertController, ModalController, PopoverController } from '@ionic/angular';
+import { AlertController, ModalController, PopoverController, NavController } from '@ionic/angular';
 import { WelcomeComponent } from './components/welcome/welcome.component';
 import { SessionService } from '../shared/services/session.service';
 import { GameConfig } from '../shared/interfaces/game-config';
@@ -48,6 +48,7 @@ export class GamePage implements OnInit {
     private modalController: ModalController,
     private sessionService: SessionService,
     private popoverController: PopoverController,
+    private navCtrl: NavController,
     public alertController: AlertController
   ) { }
 
@@ -94,7 +95,7 @@ export class GamePage implements OnInit {
       this.tutorialsRunning = true;
       this.pauseGame();
       for (const tuto of this.currentTutorials) {
-        if (!this.checkIfTutoWasRunned(tuto.title)){
+        if (!this.checkIfTutoWasRunned(tuto.title)) {
           this.tutorialsRuns.push(tuto.title);
           await this.presentPopover(tuto.message, tuto.$event, tuto.title);
         }
@@ -241,8 +242,12 @@ export class GamePage implements OnInit {
       componentProps: { matchInfo: userMatchInfo }
     });
     modal.present();
-    await modal.onDidDismiss();
-    this.startNewGame();
+    const answer = await modal.onDidDismiss();
+    if (answer.data) {
+      this.startNewGame();
+    } else {
+      this.navCtrl.navigateRoot('/home');
+    }
   }
 
   private initChildEventReceived() {

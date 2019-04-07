@@ -15,8 +15,12 @@ export class InvitePlayAgainComponent implements OnInit {
 
   }
 
-  playAgain(){
-    this.modalCtrl.dismiss();
+  playAgain() {
+    this.modalCtrl.dismiss(true);
+  }
+  
+  backHome() {
+    this.modalCtrl.dismiss(false);
   }
 
 }
