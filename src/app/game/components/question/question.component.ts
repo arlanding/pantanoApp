@@ -90,6 +90,7 @@ export class QuestionComponent implements OnInit, OnDestroy {
 
   public answerQuestion(userAnswer, position) {
     this.disabled = true;
+    this.wildcardApplied = false;
     // this.position0 = 'success';
     const answeredQuestion = { number: this.idQuest, user_ans: this.answers[position] }
     const correctAnswerEmmiter = { eventName: 'answer', correctAnswer: true, answer: answeredQuestion };

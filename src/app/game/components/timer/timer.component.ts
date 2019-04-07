@@ -69,7 +69,7 @@ export class TimerComponent implements OnInit, OnDestroy {
   public timerTutorialFn(event) {
     if (!this.timerTutorial) {
       this.timerTutorial = true;
-      this.emit({ eventName: 'multipleTutorial', tutorials: [{ $event: event, message: 'Tenes 10 segundos para cada pregunta', title: 'Tiempo' }] });
+      this.emit({ eventName: 'multipleTutorial', tutorials: [{ $event: event, message: 'Tenes 20 segundos para cada pregunta', title: 'Tiempo' }] });
     }
   }
 
@@ -82,7 +82,7 @@ export class TimerComponent implements OnInit, OnDestroy {
         return this.emit(incorrectAnswerEmmiter)
       }
     }
-      , 100);
+      , 200);
   }
 
   private resetTimePct() {
